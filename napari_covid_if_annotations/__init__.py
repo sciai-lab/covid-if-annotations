@@ -3,8 +3,6 @@ try:
 except ImportError:
     __version__ = "unknown"
 
-# replace the asterisk with named imports
-from .covid_if_annotations import napari_get_reader
-
+from .io_hooks import napari_get_reader
 
 __all__ = ["napari_get_reader"]
