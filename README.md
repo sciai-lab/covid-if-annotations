@@ -22,9 +22,17 @@ https://napari.org/docs/plugins/index.html
 
 ## Installation
 
-You can install `napari-covid-if-annotations` via [pip]:
+### From source
 
-    pip install napari-covid-if-annotations
+Set up a conda env with all dependencies:
+
+```
+conda create -c conda-forge -n test-annotations napari scikit-image h5py pandas
+```
+Then install the napari plugin (in dev mode) via
+```
+pip install -e .
+```
 
 ## Contributing
 
