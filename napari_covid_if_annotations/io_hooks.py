@@ -14,7 +14,7 @@ import os
 import h5py
 from napari_plugin_engine import napari_hook_implementation
 
-from .io_utils import make_raw_layers, make_segmentation_layers
+from .layers import get_layers_from_file
 
 
 H5_EXTS = ['.hdf', '.hdf5', '.h5']
@@ -78,7 +78,6 @@ def reader_function(path):
     layers = []
 
     with h5py.File(path, 'r') as f:
-        layers.extend(make_raw_layers(f, saturation_factor=1))
-        layers.extend(make_segmentation_layers(f, edge_width=2))
+        layers = get_layers_from_file(f)
 
     return layers

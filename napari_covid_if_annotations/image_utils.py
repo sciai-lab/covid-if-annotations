@@ -31,3 +31,13 @@ def get_edge_segmentation(seg, iters):
 def get_centroids(seg):
     props = regionprops(seg)
     return np.array([prop['centroid'] for prop in props])
+
+
+# TODO generalize to support more values than [1, 2]
+def map_labels_to_edges(edges, seg_ids, infected_labels):
+    infected_edges = np.zeros_like(edges)
+    infected_ids = seg_ids[infected_labels == 1]
+    control_ids = seg_ids[infected_labels == 2]
+    infected_edges[np.isin(edges, infected_ids)] = 1
+    infected_edges[np.isin(edges, control_ids)] = 2
+    return infected_edges

@@ -2,24 +2,16 @@ import argparse
 import h5py
 import napari
 
-from napari_covid_if_annotations.io_utils import get_raw_data, get_segmentation_data
+from napari_covid_if_annotations.layers import get_layers_from_file
 
 
 def initialize_from_file(viewer, path, saturation_factor, edge_width):
     with h5py.File(path, 'r') as f:
-        raw, marker = get_raw_data(f, saturation_factor=saturation_factor)
-        (seg, seg_ids, centroids,
-         infected_edges, infected_labels) = get_segmentation_data(f, edge_width=edge_width)
+        layers = get_layers_from_file(f, saturation_factor, edge_width)
 
-    viewer.add_image(raw, name='raw')
-    viewer.add_image(marker, name='marker', visible=False)
-
-    viewer.add_labels(infected_edges, name='infected-classification', visible=False)
-    viewer.add_labels(seg, name='cell-segmentation', metadata={'seg_ids': seg_ids,
-                                                               'infected_labels': infected_labels})
-
-    # TODO better name for the points layer
-    viewer.add_points(centroids, name='centers')
+    for (data, kwargs, layer_type) in layers:
+        adder = getattr(viewer, f'add_{layer_type}')
+        adder(data, **kwargs)
 
 
 # should be installed as a script in setup.py

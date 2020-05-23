@@ -1,7 +1,6 @@
 import numpy as np
 from napari import Viewer
-from .image_utils import get_edge_segmentation, get_centroids
-from .io_utils import to_infected_edges
+from .image_utils import get_edge_segmentation, get_centroids, map_labels_to_edges
 
 
 def update_infected_labels(seg_ids, prev_seg_ids, infected_labels):
@@ -33,8 +32,8 @@ def update_edges_and_centroids(viewer):
 
     # TODO need to set the values of the points according to the infected labels
     centroids = get_centroids(seg)
-    viewer.layers['centers'].data = centroids
+    viewer.layers['infected-vs-control'].data = centroids
 
     edges = get_edge_segmentation(seg, 2)
-    infected_edges = to_infected_edges(edges, seg_ids, infected_labels)
-    viewer.layers['infected-classification'].data = infected_edges
+    infected_edges = map_labels_to_edges(edges, seg_ids, infected_labels)
+    viewer.layers['cell-outlines'].data = infected_edges
