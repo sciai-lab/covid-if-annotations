@@ -12,7 +12,10 @@ Annotation Tool for immunofluorescence assay images
 
 ## Usage
 
-For now: install the plugin, open napari, drag and drop a hdf5 file with the right data layout.
+After installing the plugin, you can run
+```
+python launch.py --path /path/to/data.h5
+```
 Example data is [available here](https://oc.embl.de/index.php/s/IghxebboVxgpraU).
 
 ## Installation
