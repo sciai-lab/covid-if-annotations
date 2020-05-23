@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.ndimage.morphology import binary_erosion
+from skimage.measure import regionprops
 
 
 def normalize(im):
@@ -25,3 +26,8 @@ def get_edge_segmentation(seg, iters):
         edge_mask = np.logical_xor(seg_mask, eroded_mask)
         new_seg[edge_mask] = seg_id
     return new_seg
+
+
+def get_centroids(seg):
+    props = regionprops(seg)
+    return np.array([prop['centroid'] for prop in props])

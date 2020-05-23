@@ -1,0 +1,1 @@
+from .covid_if_annotations import launch_covid_if_annotation_tool
