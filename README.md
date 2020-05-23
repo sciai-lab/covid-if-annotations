@@ -10,15 +10,10 @@ Annotation Tool for immunofluorescence assay images
 
 ----------------------------------
 
-This [napari] plugin was generated with [Cookiecutter] using with [@napari]'s [cookiecutter-napari-plugin] template.
+## Usage
 
-<!--
-Don't miss the full getting started guide to set up your new package:
-https://github.com/napari/cookiecutter-napari-plugin#getting-started
-
-and review the napari docs for plugin developers:
-https://napari.org/docs/plugins/index.html
--->
+For now: install the plugin, open napari, drag and drop a hdf5 file with the right data layout.
+Example data is [available here](https://oc.embl.de/index.php/s/IghxebboVxgpraU).
 
 ## Installation
 
@@ -33,6 +28,18 @@ Then install the napari plugin (in dev mode) via
 ```
 pip install -e .
 ```
+
+## Acknowledgements
+
+This [napari] plugin was generated with [Cookiecutter] using with [@napari]'s [cookiecutter-napari-plugin] template.
+
+<!--
+Don't miss the full getting started guide to set up your new package:
+https://github.com/napari/cookiecutter-napari-plugin#getting-started
+
+and review the napari docs for plugin developers:
+https://napari.org/docs/plugins/index.html
+-->
 
 ## Contributing
 
