@@ -3,7 +3,7 @@ import skimage.color as skc
 
 from .image_utils import (get_centroids, get_edge_segmentation, map_labels_to_edges,
                           normalize, quantile_normalize)
-from .io_utils import read_image, read_table
+from .io_utils import has_table, read_image, read_table
 
 
 def get_raw_data(f, seg, saturation_factor):
@@ -31,13 +31,17 @@ def get_raw_data(f, seg, saturation_factor):
     return raw, marker
 
 
-def get_segmentation_data(f, seg, edge_width):
-    _, infected_labels = read_table(f, 'infected_cell_labels')
-    assert len(infected_labels) == seg.max() + 1
-    assert infected_labels.shape[1] == 2
-    infected_labels = infected_labels[:, 1]
+def get_segmentation_data(f, seg, edge_width, infected_label_name='infected_cell_labels'):
 
     seg_ids = np.unique(seg)
+    if has_table(f, infected_label_name):
+        _, infected_labels = read_table(f, infected_label_name)
+        assert infected_labels.shape[1] == 2
+        infected_labels = infected_labels[:, 1]
+        infected_labels = infected_labels.astype('int32')
+    else:
+        infected_labels = np.zeros(len(seg_ids), dtype='int32')
+
     assert seg_ids.shape == infected_labels.shape, f"{seg_ids.shape}, {infected_labels.shape}"
 
     edges = get_edge_segmentation(seg, edge_width)
@@ -69,10 +73,14 @@ def get_layers_from_file(f, saturation_factor=1., edge_width=2):
 
     n_points = len(centroids)
     labels = ['unlabeled', 'infected', 'control', 'uncertain']
+    initial_label_values = np.array([labels[infected_label]
+                                     for infected_label in infected_labels[1:]])
+    assert len(initial_label_values) == n_points
+
     face_color_cycle = ['white', 'red', 'cyan', 'yellow']
     properties = {
         'confidence': np.zeros(n_points),
-        'cell_type': np.array(['unlabeled'] * n_points)
+        'cell_type': initial_label_values
     }
 
     centroid_kwargs = {
