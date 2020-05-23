@@ -75,17 +75,20 @@ def get_segmentation_data(f, edge_width):
 
     centroids = get_centroids(seg)
 
-    return seg, centroids, infected_edges, infected_labels
+    return seg, seg_ids, centroids, infected_edges, infected_labels
 
 
 def make_segmentation_layers(f, edge_width):
 
-    seg, centroids, infected_edges, _ = get_segmentation_data(f, edge_width)
+    (seg, seg_ids, centroids,
+     infected_edges, infected_labels) = get_segmentation_data(f, edge_width=edge_width)
 
     edges_kwargs = {'name': 'infected-classification', 'visible': False}
     edges_layer = (infected_edges, edges_kwargs, 'labels')
 
-    seg_kwargs = {'name': 'cell-segmentation'}
+    seg_kwargs = {'name': 'cell-segmentation',
+                  'metadata': {'seg_ids': seg_ids,
+                               'infected_labels': infected_labels}}
     seg_layer = (seg, seg_kwargs, 'labels')
 
     # TODO better name

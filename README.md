@@ -14,8 +14,14 @@ Annotation Tool for immunofluorescence assay images
 
 After installing the plugin, you can run
 ```
+python launch.py
+```
+to launch the annotation tool. You can then drag and drop data to annotate onto the viewer.
+Or you can start the tool with data already via:
+```
 python launch.py --path /path/to/data.h5
 ```
+
 Example data is [available here](https://oc.embl.de/index.php/s/IghxebboVxgpraU).
 
 ## Installation
