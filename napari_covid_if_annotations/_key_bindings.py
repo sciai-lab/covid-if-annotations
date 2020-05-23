@@ -37,3 +37,29 @@ def update_edges_and_centroids(viewer):
     edges = get_edge_segmentation(seg, 2)
     infected_edges = map_labels_to_edges(edges, seg_ids, infected_labels)
     viewer.layers['cell-outlines'].data = infected_edges
+
+
+@Viewer.bind_key('.')
+def next_label(viewer, event=None):
+    """Keybinding to advance to the next label value in
+    the labels list (defined near the top) with wraparound
+
+    Setting the values in points_layer.current_properties modifies the property
+    values for the currently selected points and also will be the values used for
+    the next points that are added.
+    """
+    points_layer = viewer.layers['infected-vs-control']
+    labels = points_layer.metadata['labels']
+
+    # get the current properties and cell type value
+    current_properties = points_layer.current_properties
+    current_label = current_properties['cell_type'][0]
+
+    # get the next label value with wraparound
+    ind = list(labels).index(current_label)
+    new_ind = (ind + 1) % len(labels)
+    new_label = labels[new_ind]
+
+    # set the new cell type value and update the current_properties
+    current_properties['cell_type'] = np.array([new_label])
+    points_layer.current_properties = current_properties

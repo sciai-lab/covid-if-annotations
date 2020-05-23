@@ -61,8 +61,30 @@ def get_layers_from_file(f, saturation_factor=1., edge_width=2):
                      'infected_labels': infected_labels}
     }
 
+    # the kwargs for the point layer we use for semantic labeling
+    # TODO this is based on the example code by @kevinyamauchi, I don't understand
+    # the meaning of the following parameters yet:
+    # - properties (how exactly are these associated with points?)
+    # - confidence
+
+    n_points = len(centroids)
+    labels = ['unlabeled', 'infected', 'control', 'uncertain']
+    face_color_cycle = ['white', 'red', 'cyan', 'yellow']
+    properties = {
+        'confidence': np.zeros(n_points),
+        'cell_type': np.array(['unlabeled'] * n_points)
+    }
+
     centroid_kwargs = {
-        'name': 'infected-vs-control'
+        'name': 'infected-vs-control',
+        'properties': properties,
+        'size': 15,
+        'edge_width': 5,
+        'edge_color': 'black',
+        'edge_colormap': 'gray',
+        'face_color': 'cell_type',
+        'face_color_cycle': face_color_cycle,
+        'metadata': {'labels': labels}
     }
 
     layers = [
