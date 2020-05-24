@@ -1,5 +1,6 @@
 import numpy as np
 import skimage.color as skc
+from vispy.color import Colormap
 
 from .image_utils import (get_centroids, get_edge_segmentation, map_labels_to_edges,
                           normalize, quantile_normalize)
@@ -75,11 +76,31 @@ def get_layers_from_file(f, saturation_factor=1., edge_width=2):
     (seg_ids, centroids,
      infected_edges, infected_labels) = get_segmentation_data(f, seg, edge_width)
 
+    # the keyword arguments passed to 'add_labels' for the cell segmentation layer
     seg_kwargs = {
         'name': 'cell-segmentation',
         'metadata': {'seg_ids': seg_ids,
                      'infected_labels': infected_labels,
                      'hide_annotated_segments': False}
+    }
+
+    # FIXME it does not work like this!
+    # what I need is a custom color map that matches 0->transparent, 1->red, 2->cyan, 3->yellow
+    # I don't know how to do this with the vispy color map.
+
+    # the keyword arguments passed to 'add_image' for the edge layer
+    # custom colormap to have colors in sync with the point layer
+    cmap = Colormap([
+        [0., 0., 0., 0.],  # label 0 is fully transparent
+        [1., 0., 0., 1.],  # label 1 is red
+        [0., 1., 1., 1.],  # label 2 is cyan
+        [1., 1., 0., 1.],  # label 3 is yellow
+    ])
+    edge_kwargs = {
+        'name': 'cell-outlines',
+        'visible': False,
+        'colormap': cmap,
+        'metadata': {'edge_width': edge_width}
     }
 
     # napari reorders the labels (it casts np.unique)
@@ -107,9 +128,7 @@ def get_layers_from_file(f, saturation_factor=1., edge_width=2):
         (raw, {'name': 'raw'}, 'image'),
         (marker, {'name': 'virus-marker', 'visible': False}, 'image'),
         (seg, seg_kwargs, 'labels'),
-        # TODO can we over-ride the color map, in order to have the same colors as for the
-        # point_layer? {1: 'red' 2: 'cyan', 3: 'yellow').
-        (infected_edges, {'name': 'cell-outlines', 'visible': False}, 'labels'),
+        (infected_edges, edge_kwargs, 'image'),
         (centroids, centroid_kwargs, 'points')
     ]
     return layers

@@ -25,8 +25,7 @@ def update_infected_labels_from_points(point_labels, infected_labels):
 
 
 # TODO this is still a bit slow and interactivity would profit from speeding it up.
-# I think the best candidate for this is 'get_edge_segmentation', which includes a loop over
-# every segment and performs erosion in this loop
+# the bottleneck is 'get_edge_segmentation', which includes a loop over every segment to perform erosion
 # TODO create a corresponing gui element via magicgui
 @Viewer.bind_key('u')
 def update_layers(viewer):
@@ -50,12 +49,12 @@ def update_layers(viewer):
     metadata.update({'seg_ids': seg_ids, 'infected_labels': infected_labels})
 
     hide_annotated_segments = metadata['hide_annotated_segments']
+    # TODO the most elegant vay to hide annotated segments would be to
+    # change the color map for these segment ids. I don't know if this is possible / how to do it.
     if hide_annotated_segments:
-        hidden_segments = seg_ids[infected_labels > 0]
-        # TODO the most elegant vay to hide annotated segments would be to
-        # change the color map for these segment ids. I don't know if this is possible / how to do it.
-    else:
-        hidden_segments = None
+        pass
+        # hidden_segments = seg_ids[infected_labels > 0]
+        # color_dict = {seg_id: 'transparent' for seg_id in hidden_segments}
     viewer.layers['cell-segmentation'].metadata = metadata
 
     # get the new centroids and update the centroid properties
@@ -64,8 +63,12 @@ def update_layers(viewer):
     viewer.layers['infected-vs-control'].data = centroids
     viewer.layers['infected-vs-control'].properties = properties
 
-    edges = get_edge_segmentation(seg, 2)
-    infected_edges = map_labels_to_edges(edges, seg_ids, infected_labels, hidden_segments)
+    if hide_annotated_segments:
+        infected_edges = np.zeros_like(seg)
+    else:
+        edge_width = viewer.layers['cell-outlines'].metadata['edge_width']
+        edges = get_edge_segmentation(seg, edge_width)
+        infected_edges = map_labels_to_edges(edges, seg_ids, infected_labels)
     viewer.layers['cell-outlines'].data = infected_edges
 
 
