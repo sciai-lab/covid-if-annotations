@@ -84,10 +84,6 @@ def get_layers_from_file(f, saturation_factor=1., edge_width=2):
                      'hide_annotated_segments': False}
     }
 
-    # FIXME it does not work like this!
-    # what I need is a custom color map that matches 0->transparent, 1->red, 2->cyan, 3->yellow
-    # I don't know how to do this with the vispy color map.
-
     # the keyword arguments passed to 'add_image' for the edge layer
     # custom colormap to have colors in sync with the point layer
     cmap = Colormap([
@@ -100,7 +96,8 @@ def get_layers_from_file(f, saturation_factor=1., edge_width=2):
         'name': 'cell-outlines',
         'visible': False,
         'colormap': cmap,
-        'metadata': {'edge_width': edge_width}
+        'metadata': {'edge_width': edge_width},
+        'contrast_limits': [0, 3]
     }
 
     # napari reorders the labels (it casts np.unique)
