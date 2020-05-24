@@ -107,6 +107,8 @@ def get_layers_from_file(f, saturation_factor=1., edge_width=2):
         (raw, {'name': 'raw'}, 'image'),
         (marker, {'name': 'virus-marker', 'visible': False}, 'image'),
         (seg, seg_kwargs, 'labels'),
+        # TODO can we over-ride the color map, in order to have the same colors as for the
+        # point_layer? {1: 'red' 2: 'cyan', 3: 'yellow').
         (infected_edges, {'name': 'cell-outlines', 'visible': False}, 'labels'),
         (centroids, centroid_kwargs, 'points')
     ]
