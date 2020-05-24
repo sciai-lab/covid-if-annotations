@@ -33,11 +33,12 @@ def get_centroids(seg):
     return np.array([prop['centroid'] for prop in props])
 
 
-# TODO generalize to support more values than [1, 2]
-def map_labels_to_edges(edges, seg_ids, infected_labels):
-    infected_edges = np.zeros_like(edges)
-    infected_ids = seg_ids[infected_labels == 1]
-    control_ids = seg_ids[infected_labels == 2]
-    infected_edges[np.isin(edges, infected_ids)] = 1
-    infected_edges[np.isin(edges, control_ids)] = 2
-    return infected_edges
+def apply_dict_to_array(x, my_dict):
+    unique_values, inverse_indices = np.unique(x, return_inverse=True)
+    return np.array([my_dict[val] for val in unique_values])[inverse_indices].reshape(x.shape)
+
+
+def map_labels_to_edges(edges, seg_ids, labels):
+    assert len(seg_ids) == len(labels)
+    replace_dict = dict(zip(seg_ids, labels))
+    return apply_dict_to_array(edges, replace_dict)

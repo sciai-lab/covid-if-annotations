@@ -81,11 +81,15 @@ def next_label(viewer, event=None):
     current_properties = points_layer.current_properties
     current_label = current_properties['cell_type'][0]
 
+    print("Current_label:", current_label)
     # get the next label value with wraparound
     ind = list(labels).index(current_label)
+    print("Current index:", ind)
     new_ind = (ind + 1) % len(labels)
+    print("New index:", new_ind)
     new_label = labels[new_ind]
 
+    print("New label:", new_label)
     # set the new cell type value and update the current_properties
     current_properties['cell_type'] = np.array([new_label])
     points_layer.current_properties = current_properties

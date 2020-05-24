@@ -34,11 +34,20 @@ def get_raw_data(f, seg, saturation_factor):
 def get_segmentation_data(f, seg, edge_width, infected_label_name='infected_cell_labels'):
 
     seg_ids = np.unique(seg)
+    # TODO log if labels were loaded or initialized to be zero
     if has_table(f, infected_label_name):
         _, infected_labels = read_table(f, infected_label_name)
         assert infected_labels.shape[1] == 2
         infected_labels = infected_labels[:, 1]
         infected_labels = infected_labels.astype('int32')
+
+        # we only support labels [0, 1, 2, 3] = ['unlabeled', 'infected', 'control', 'uncertain']
+        expected_labels = {0, 1, 2, 3}
+        unique_labels = np.unique(infected_labels)
+        assert len(set(unique_labels) - expected_labels) == 0
+        # the background should always be mapped to 0
+        assert infected_labels[0] == 0
+
     else:
         infected_labels = np.zeros(len(seg_ids), dtype='int32')
 
