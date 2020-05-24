@@ -61,9 +61,9 @@ def get_segmentation_data(f, seg, edge_width, infected_label_name='infected_cell
     return seg_ids, centroids, infected_edges, infected_labels
 
 
-def get_centroid_properties(centroids, infected_labels, labels):
-    label_values = np.array([labels[infected_label] for infected_label in infected_labels[1:]])
-    assert len(label_values) == len(centroids)
+def get_centroid_properties(centroids, infected_labels):
+    label_values = infected_labels[1:]
+    assert len(label_values) == len(centroids), f"{len(label_values)}, {len(centroids)}"
     properties = {'cell_type': label_values}
     return properties
 
@@ -82,10 +82,14 @@ def get_layers_from_file(f, saturation_factor=1., edge_width=2):
                      'hide_annotated_segments': False}
     }
 
-    labels = ['unlabeled', 'infected', 'control', 'uncertain']
-    properties = get_centroid_properties(centroids, infected_labels, labels)
-
+    # napari reorders the labels (it casts np.unique)
+    # so for now it's easier to just use numeric labels and have separate
+    # label-names to not get confused by reordering
+    label_names = ['unlabeled', 'infected', 'control', 'uncertain']
+    labels = [0, 1, 2, 3]
     face_color_cycle = ['white', 'red', 'cyan', 'yellow']
+
+    properties = get_centroid_properties(centroids, infected_labels)
     centroid_kwargs = {
         'name': 'infected-vs-control',
         'properties': properties,
@@ -95,7 +99,8 @@ def get_layers_from_file(f, saturation_factor=1., edge_width=2):
         'edge_colormap': 'gray',
         'face_color': 'cell_type',
         'face_color_cycle': face_color_cycle,
-        'metadata': {'labels': labels}
+        'metadata': {'labels': labels,
+                     'label_names': label_names}
     }
 
     layers = [

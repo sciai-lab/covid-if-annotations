@@ -14,11 +14,9 @@ def update_infected_labels_from_segmentation(seg_ids, prev_seg_ids, infected_lab
 
 # NOTE we expect len(point_labels) == len(infected_labels) - 1
 # because we don't have a point for the background
-def update_infected_labels_from_points(point_labels, infected_labels, labels):
+def update_infected_labels_from_points(point_labels, infected_labels):
     assert len(point_labels) == len(infected_labels) - 1
-    labels_to_val = {label: ii for ii, label in enumerate(labels)}
-    infected_labels = np.array([0] + [labels_to_val[point_label] for point_label in point_labels])
-    return infected_labels
+    return np.array([0] + point_labels.tolist())
 
 
 #
@@ -44,8 +42,7 @@ def update_layers(viewer):
     # get the updated labels from the point layer properties
     points_layer = viewer.layers['infected-vs-control']
     point_labels = points_layer.properties['cell_type']
-    labels = points_layer.metadata['labels']
-    infected_labels = update_infected_labels_from_points(point_labels, infected_labels, labels)
+    infected_labels = update_infected_labels_from_points(point_labels, infected_labels)
 
     # the seg ids might have changed because labels were erased or new labels were added
     # in this case, we need to update the infected labels
@@ -63,7 +60,7 @@ def update_layers(viewer):
 
     # get the new centroids and update the centroid properties
     centroids = get_centroids(seg)
-    properties = get_centroid_properties(centroids, infected_labels, labels)
+    properties = get_centroid_properties(centroids, infected_labels)
     viewer.layers['infected-vs-control'].data = centroids
     viewer.layers['infected-vs-control'].properties = properties
 
@@ -102,15 +99,11 @@ def next_label(viewer, event=None):
     current_properties = points_layer.current_properties
     current_label = current_properties['cell_type'][0]
 
-    print("Current_label:", current_label)
     # get the next label value with wraparound
     ind = list(labels).index(current_label)
-    print("Current index:", ind)
     new_ind = (ind + 1) % len(labels)
-    print("New index:", new_ind)
     new_label = labels[new_ind]
 
-    print("New label:", new_label)
     # set the new cell type value and update the current_properties
     current_properties['cell_type'] = np.array([new_label])
     points_layer.current_properties = current_properties
