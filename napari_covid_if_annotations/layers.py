@@ -52,6 +52,13 @@ def get_segmentation_data(f, seg, edge_width, infected_label_name='infected_cell
     return seg_ids, centroids, infected_edges, infected_labels
 
 
+def get_centroid_properties(centroids, infected_labels, labels):
+    label_values = np.array([labels[infected_label] for infected_label in infected_labels[1:]])
+    assert len(label_values) == len(centroids)
+    properties = {'cell_type': label_values}
+    return properties
+
+
 def get_layers_from_file(f, saturation_factor=1., edge_width=2):
     seg = read_image(f, 'cell_segmentation')
 
@@ -65,24 +72,10 @@ def get_layers_from_file(f, saturation_factor=1., edge_width=2):
                      'infected_labels': infected_labels}
     }
 
-    # the kwargs for the point layer we use for semantic labeling
-    # TODO this is based on the example code by @kevinyamauchi, I don't understand
-    # the meaning of the following parameters yet:
-    # - properties (how exactly are these associated with points?)
-    # - confidence
-
-    n_points = len(centroids)
     labels = ['unlabeled', 'infected', 'control', 'uncertain']
-    initial_label_values = np.array([labels[infected_label]
-                                     for infected_label in infected_labels[1:]])
-    assert len(initial_label_values) == n_points
+    properties = get_centroid_properties(centroids, infected_labels, labels)
 
     face_color_cycle = ['white', 'red', 'cyan', 'yellow']
-    properties = {
-        'confidence': np.zeros(n_points),
-        'cell_type': initial_label_values
-    }
-
     centroid_kwargs = {
         'name': 'infected-vs-control',
         'properties': properties,

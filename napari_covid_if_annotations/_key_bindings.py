@@ -1,6 +1,7 @@
 import numpy as np
 from napari import Viewer
 from .image_utils import get_edge_segmentation, get_centroids, map_labels_to_edges
+from .layers import get_centroid_properties
 
 
 def update_infected_labels_from_segmentation(seg_ids, prev_seg_ids, infected_labels):
@@ -25,9 +26,7 @@ def update_infected_labels_from_points(point_labels, infected_labels, labels):
 #
 
 
-# TODO would be better to have this as an event listener that is triggered whenever
-# the segmentation is update (= painted) but I don't know how to do this
-# add a key binding to update the edges and point layers from the segmentation
+# TODO create a corresponing gui element via magicgui
 @Viewer.bind_key('u')
 def update_layers(viewer):
 
@@ -51,9 +50,11 @@ def update_layers(viewer):
     metadata.update({'seg_ids': seg_ids, 'infected_labels': infected_labels})
     viewer.layers['cell-segmentation'].metadata = metadata
 
-    # TODO need to update the properties of the points according to the infected labels
+    # get the new centroids and update the centroid properties
     centroids = get_centroids(seg)
+    properties = get_centroid_properties(centroids, infected_labels, labels)
     viewer.layers['infected-vs-control'].data = centroids
+    viewer.layers['infected-vs-control'].properties = properties
 
     edges = get_edge_segmentation(seg, 2)
     infected_edges = map_labels_to_edges(edges, seg_ids, infected_labels)
@@ -88,3 +89,26 @@ def next_label(viewer, event=None):
     # set the new cell type value and update the current_properties
     current_properties['cell_type'] = np.array([new_label])
     points_layer.current_properties = current_properties
+
+
+def next_on_click(layer, event):
+    """Mouse click binding to advance the label of the selected point"""
+    # only perform toggling if in the selection mode and there are points selected
+    if (layer.mode == 'select') and (len(layer.selected_data) > 0):
+        # check that the mouse click callback is in the right position
+        if layer.mouse_drag_callbacks.index(next_on_click) > 0:
+            # FIXME this does not work, because we need to pass the viewer to it!
+            next_label()
+
+
+# also have a gui element to activate/deactivate?
+@Viewer.bind_key('t')
+def set_toggle_mode(viewer, event=None):
+    """Keybinding to set the viewer selection mode and mouse callbacks
+    for toggling selected points properties by clicking on them
+    """
+    points_layer = viewer.layers['infected-vs-control']
+    if next_on_click in points_layer.mouse_drag_callbacks:
+        points_layer.mouse_drag_callbacks.remove(next_on_click)
+    points_layer.mode = 'select'
+    points_layer.mouse_drag_callbacks.append(next_on_click)
