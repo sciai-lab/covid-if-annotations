@@ -35,13 +35,15 @@ Keybindings:
 
 ### From source
 
-Set up a conda env with all dependencies:
+Set up a conda env with all dependencies and activate it:
 
 ```
 conda create -c conda-forge -n test-annotations napari scikit-image h5py pandas
+conda activate test-annotations
 ```
-Then install the napari plugin (in dev mode) via
+Then install magicgui and this tool using pip:
 ```
+pip install magicgui
 pip install -e .
 ```
 
