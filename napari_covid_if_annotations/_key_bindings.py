@@ -112,14 +112,14 @@ def next_label(viewer, event=None):
     points_layer.current_properties = current_properties
 
 
-def next_on_click(layer, event):
+def next_on_click(viewer, event):
     """Mouse click binding to advance the label of the selected point"""
     # only perform toggling if in the selection mode and there are points selected
+    layer = viewer.layers['infected-vs-control']
     if (layer.mode == 'select') and (len(layer.selected_data) > 0):
         # check that the mouse click callback is in the right position
-        if layer.mouse_drag_callbacks.index(next_on_click) > 0:
-            # FIXME this does not work, because we need to pass the viewer to it!
-            next_label()
+        if next_on_click in viewer.mouse_drag_callbacks:
+            next_label(viewer)
 
 
 # also have a gui element to activate/deactivate?
@@ -128,8 +128,7 @@ def set_toggle_mode(viewer, event=None):
     """Keybinding to set the viewer selection mode and mouse callbacks
     for toggling selected points properties by clicking on them
     """
-    points_layer = viewer.layers['infected-vs-control']
-    if next_on_click in points_layer.mouse_drag_callbacks:
-        points_layer.mouse_drag_callbacks.remove(next_on_click)
-    points_layer.mode = 'select'
-    points_layer.mouse_drag_callbacks.append(next_on_click)
+    if next_on_click in viewer.mouse_drag_callbacks:
+        viewer.mouse_drag_callbacks.remove(next_on_click)
+    else:
+        viewer.mouse_drag_callbacks.append(next_on_click)
