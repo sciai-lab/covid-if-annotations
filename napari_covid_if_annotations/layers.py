@@ -78,7 +78,8 @@ def get_layers_from_file(f, saturation_factor=1., edge_width=2):
     seg_kwargs = {
         'name': 'cell-segmentation',
         'metadata': {'seg_ids': seg_ids,
-                     'infected_labels': infected_labels}
+                     'infected_labels': infected_labels,
+                     'hide_annotated_segments': False}
     }
 
     labels = ['unlabeled', 'infected', 'control', 'uncertain']

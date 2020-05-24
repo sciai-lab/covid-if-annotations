@@ -17,6 +17,8 @@ def quantile_normalize(im, low=.01, high=.99):
     return np.clip(im, 0., 1.)
 
 
+# TODO speed this up!
+# is there an easy way to vectorize? otherwise use numba
 def get_edge_segmentation(seg, iters):
     seg_ids = np.unique(seg)[1:]
     new_seg = np.zeros_like(seg)
@@ -38,7 +40,10 @@ def apply_dict_to_array(x, my_dict):
     return np.array([my_dict[val] for val in unique_values])[inverse_indices].reshape(x.shape)
 
 
-def map_labels_to_edges(edges, seg_ids, labels):
+def map_labels_to_edges(edges, seg_ids, labels, hide_ids=None):
     assert len(seg_ids) == len(labels)
     replace_dict = dict(zip(seg_ids, labels))
+    if hide_ids is not None:
+        for hide_id in hide_ids:
+            replace_dict[hide_id] = 0
     return apply_dict_to_array(edges, replace_dict)

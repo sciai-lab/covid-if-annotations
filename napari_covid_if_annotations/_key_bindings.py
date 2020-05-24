@@ -26,6 +26,9 @@ def update_infected_labels_from_points(point_labels, infected_labels, labels):
 #
 
 
+# TODO this is still a bit slow and interactivity would profit from speeding it up.
+# I think the best candidate for this is 'get_edge_segmentation', which includes a loop over
+# every segment and performs erosion in this loop
 # TODO create a corresponing gui element via magicgui
 @Viewer.bind_key('u')
 def update_layers(viewer):
@@ -48,6 +51,14 @@ def update_layers(viewer):
     # in this case, we need to update the infected labels
     infected_labels = update_infected_labels_from_segmentation(seg_ids, prev_seg_ids, infected_labels)
     metadata.update({'seg_ids': seg_ids, 'infected_labels': infected_labels})
+
+    hide_annotated_segments = metadata['hide_annotated_segments']
+    if hide_annotated_segments:
+        hidden_segments = seg_ids[infected_labels > 0]
+        # TODO the most elegant vay to hide annotated segments would be to
+        # change the color map for these segment ids. I don't know if this is possible / how to do it.
+    else:
+        hidden_segments = None
     viewer.layers['cell-segmentation'].metadata = metadata
 
     # get the new centroids and update the centroid properties
@@ -57,8 +68,18 @@ def update_layers(viewer):
     viewer.layers['infected-vs-control'].properties = properties
 
     edges = get_edge_segmentation(seg, 2)
-    infected_edges = map_labels_to_edges(edges, seg_ids, infected_labels)
+    infected_edges = map_labels_to_edges(edges, seg_ids, infected_labels, hidden_segments)
     viewer.layers['cell-outlines'].data = infected_edges
+
+
+# TODO create a corresponing gui element via magicgui
+@Viewer.bind_key('h')
+def toggle_hide_annotated_segments(viewer):
+    seg_layer = viewer.layers['cell-segmentation']
+    metadata = seg_layer.metadata
+    metadata['hide_annotated_segments'] = not metadata['hide_annotated_segments']
+    viewer.layers['cell-segmentation'].metadata = metadata
+    update_layers(viewer)
 
 
 #
