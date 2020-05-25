@@ -29,6 +29,7 @@ Keybindings:
 - `h` toggle visibility of already annotated segments.
 - `.` cycle through the annotations for a selected point
 - `t` toggle annotation cycling by mouse click (not working yet!)
+- `Shift + s` save the current annotations (segmentation + infected-vs-control labels)
 
 
 ## Installation
