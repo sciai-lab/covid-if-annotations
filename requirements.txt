@@ -2,3 +2,4 @@ h5py
 magicgui
 napari
 numpy
+pyqt>=5.12.3

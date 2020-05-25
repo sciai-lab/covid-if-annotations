@@ -2,12 +2,13 @@
 
 package:
   name: covid-if-annotations
-  version: 0.0.0dev2
+  version: 0.0.0dev5
 
 source:
   path: ..
 
 build:
+  number: 1
   noarch: python
   script:
         - python -m pip install --no-deps --ignore-installed .
@@ -27,6 +28,13 @@ requirements:
     - {{ dep.lower() }}
     {% endfor %}
 
+
+app:
+  entry: covid-if
+  summary: Annotation Tool for immunofluorescence assay images
+  own_environment: True
+  icon: logo.png
+  type: desk
 
 about:
   home: https://github.com/hci-unihd/covid-if-annotations
