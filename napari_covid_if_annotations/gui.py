@@ -26,10 +26,8 @@ def toggle_hide_annotated_segments_gui(viewer: Viewer):
 
 @magicgui(call_button='get next label [n]', viewer={"visible": False})
 def paint_new_label_gui(labels: Labels, viewer: Viewer):
-    # TODO
-    # it would be nice to also change the active layer here, but if I call
-    # viewer.active_layer = labels
-    # it seems to activate the labels layer without deactivating the current layer properly
+    viewer.layers.unselect_all()
+    labels.selected = True
     paint_new_label(labels)
 
 
