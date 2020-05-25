@@ -56,5 +56,6 @@ setup(
         'napari.plugin': [
             'covid-if-annotations = napari_covid_if_annotations',
         ],
+        'console_scripts' : ["covid-if = napari_covid_if_annotations.__main__:main"]
     },
 )

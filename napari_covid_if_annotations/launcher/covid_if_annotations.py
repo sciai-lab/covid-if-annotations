@@ -1,4 +1,3 @@
-import argparse
 import h5py
 import napari
 
@@ -45,12 +44,3 @@ def launch_covid_if_annotation_tool(path=None, saturation_factor=1, edge_width=2
         hide_gui = toggle_hide_annotated_segments_gui.Gui()
         viewer.window.add_dock_widget(hide_gui)
 
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--path', type=str, default=None)
-    parser.add_argument('--saturation_factor', type=float, default=1)
-    parser.add_argument('--edge_width', type=int, default=2)
-
-    args = parser.parse_args()
-    launch_covid_if_annotation_tool(args.path, args.saturation_factor, args.edge_width)
