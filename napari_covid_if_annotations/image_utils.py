@@ -1,6 +1,7 @@
 import numpy as np
-from scipy.ndimage.morphology import binary_erosion
+from scipy.ndimage.morphology import binary_dilation
 from skimage.measure import regionprops
+from skimage.segmentation import find_boundaries
 
 
 def normalize(im):
@@ -17,17 +18,13 @@ def quantile_normalize(im, low=.01, high=.99):
     return np.clip(im, 0., 1.)
 
 
-# TODO speed this up!
-# is there an easy way to vectorize? otherwise use numba
-def get_edge_segmentation(seg, iters):
-    seg_ids = np.unique(seg)[1:]
-    new_seg = np.zeros_like(seg)
-    for seg_id in seg_ids:
-        seg_mask = seg == seg_id
-        eroded_mask = binary_erosion(seg_mask, iterations=iters)
-        edge_mask = np.logical_xor(seg_mask, eroded_mask)
-        new_seg[edge_mask] = seg_id
-    return new_seg
+def get_edge_segmentation(seg, edge_width):
+    edge_seg = seg.copy()
+    boundaries = find_boundaries(seg, mode='thick')
+    if edge_width > 1:
+        boundaries = binary_dilation(boundaries, iterations=edge_width-1)
+    edge_seg[~boundaries] = 0
+    return edge_seg
 
 
 def get_centroids(seg):

@@ -24,9 +24,6 @@ def update_infected_labels_from_points(point_labels, infected_labels):
 #
 
 
-# TODO this is still a bit slow and interactivity would profit from speeding it up.
-# the bottleneck is 'get_edge_segmentation', which includes a loop over every segment to perform erosion
-# TODO create a corresponing gui element via magicgui
 @Viewer.bind_key('u')
 def update_layers(viewer):
 
@@ -72,7 +69,6 @@ def update_layers(viewer):
     viewer.layers['cell-outlines'].data = infected_edges
 
 
-# TODO create a corresponing gui element via magicgui
 @Viewer.bind_key('h')
 def toggle_hide_annotated_segments(viewer):
     seg_layer = viewer.layers['cell-segmentation']
