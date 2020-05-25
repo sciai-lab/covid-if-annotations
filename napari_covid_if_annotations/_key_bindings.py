@@ -116,10 +116,24 @@ def next_on_click(viewer, event):
     """Mouse click binding to advance the label of the selected point"""
     # only perform toggling if in the selection mode and there are points selected
     layer = viewer.layers['infected-vs-control']
-    if (layer.mode == 'select') and (len(layer.selected_data) > 0):
-        # check that the mouse click callback is in the right position
-        if next_on_click in viewer.mouse_drag_callbacks:
-            next_label(viewer)
+
+    # only do stuff in selection mode
+    if not layer.mode == 'select':
+        return
+
+    # only do stuiff if next on click is registed with the viewer
+    if next_on_click not in viewer.mouse_drag_callbacks:
+        return
+
+    selected_data = layer.selected_data
+    previous_selection = layer.metadata.get('previous_selected_data', {})
+    has_selection = len(selected_data) > 0
+    same_selection = selected_data == previous_selection
+
+    if has_selection and same_selection:
+        next_label(viewer)
+
+    viewer.layers['infected-vs-control'].metadata.update({'previous_selected_data': selected_data})
 
 
 # also have a gui element to activate/deactivate?
