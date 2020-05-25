@@ -1,5 +1,7 @@
 import numpy as np
 from napari import Viewer
+from napari.layers.labels import Labels
+
 from .image_utils import get_edge_segmentation, get_centroids, map_labels_to_edges
 from .layers import get_centroid_properties
 
@@ -17,6 +19,18 @@ def update_infected_labels_from_segmentation(seg_ids, prev_seg_ids, infected_lab
 def update_infected_labels_from_points(point_labels, infected_labels):
     assert len(point_labels) == len(infected_labels) - 1
     return np.array([0] + point_labels.tolist())
+
+
+#
+# keybindings for the segmentation layer
+#
+
+@Labels.bind_key('n')
+def paint_new_label(layer):
+    seg = layer.data
+    next_label = seg.max() + 1
+    layer.mode = 'paint'
+    layer.selected_label = next_label
 
 
 #
