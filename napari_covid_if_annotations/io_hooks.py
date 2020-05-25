@@ -12,12 +12,28 @@ https://napari.org/docs/plugins/for_plugin_developers.html
 import os
 
 import h5py
+
 from napari_plugin_engine import napari_hook_implementation
 
-from .layers import get_layers_from_file
+from .layers import get_layers_from_file, save_labels
 
 
 H5_EXTS = ['.hdf', '.hdf5', '.h5']
+
+
+# NOTE this doesn't work yet, but also doesn'make much sense in this context
+@napari_hook_implementation
+def napari_get_writer(path, layers):
+
+    ext = os.path.splitext(path)[1]
+    if not ext.lower() in H5_EXTS:
+        return None
+
+    # make sure we have exactly one labels layer
+    if len([layer[-1] == 'labels' for layer in layers]) != 1:
+        return None
+
+    return save_labels
 
 
 @napari_hook_implementation

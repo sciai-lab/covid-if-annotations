@@ -103,9 +103,6 @@ def write_table(f, name, column_names, table,
     if len(column_names) != table.shape[1]:
         raise ValueError(f"Number of columns does not match: {len(column_names)}, {table.shape[1]}")
 
-    # set None to np.nan
-    table[np.equal(table, None)] = np.nan
-
     # make the table datasets. we follow the layout
     # table/cells - contains the data
     # table/columns - containse the column names

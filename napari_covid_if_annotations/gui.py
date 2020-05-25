@@ -1,7 +1,6 @@
 from magicgui import magicgui, register_type
 from napari import Viewer
-from napari.layers.labels import Labels
-from ._key_bindings import update_layers, toggle_hide_annotated_segments, paint_new_label
+from ._key_bindings import update_layers, toggle_hide_annotated_segments, paint_new_label, save
 
 
 def get_viewers(gui, *args):
@@ -12,6 +11,12 @@ def get_viewers(gui, *args):
 
 
 register_type(Viewer, choices=get_viewers)
+
+
+# TODO expose the partial parameter to the gui
+@magicgui(call_button='save annotations [shfit + s]', viewer={'visible': False})
+def save_gui(viewer: Viewer):
+    save(viewer)
 
 
 @magicgui(call_button='update layers [u]', viewer={"visible": False})
@@ -25,15 +30,17 @@ def toggle_hide_annotated_segments_gui(viewer: Viewer):
 
 
 @magicgui(call_button='get next label [n]', viewer={"visible": False})
-def paint_new_label_gui(labels: Labels, viewer: Viewer):
-    viewer.layers.unselect_all()
-    labels.selected = True
-    paint_new_label(labels)
+def paint_new_label_gui(viewer: Viewer):
+    paint_new_label(viewer)
 
 
 def connect_to_viewer(viewer):
     """ Add all gui elements to the viewer
     """
+    # the save button
+    saving_gui = save_gui.Gui()
+    viewer.window.add_dock_widget(saving_gui)
+
     # the update layers button
     update_gui = update_layers_gui.Gui()
     viewer.window.add_dock_widget(update_gui)
@@ -45,5 +52,3 @@ def connect_to_viewer(viewer):
     # the paint new labels button
     paint_gui = paint_new_label_gui.Gui()
     viewer.window.add_dock_widget(paint_gui)
-    viewer.layers.events.changed.connect(lambda x: paint_gui.refresh_choices())
-    paint_gui.refresh_choices()

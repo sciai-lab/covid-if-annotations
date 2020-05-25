@@ -1,9 +1,10 @@
+import os
+
 import numpy as np
 from napari import Viewer
-from napari.layers.labels import Labels
 
 from .image_utils import get_edge_segmentation, get_centroids, map_labels_to_edges
-from .layers import get_centroid_properties
+from .layers import get_centroid_properties, save_labels
 
 
 def update_infected_labels_from_segmentation(seg_ids, prev_seg_ids, infected_labels):
@@ -22,20 +23,26 @@ def update_infected_labels_from_points(point_labels, infected_labels):
 
 
 #
-# keybindings for the segmentation layer
+# keybindings for the viewer
 #
 
-@Labels.bind_key('n')
-def paint_new_label(layer):
+@Viewer.bind_key('n')
+def paint_new_label(viewer):
+    layer = viewer.layers['cell-segmentation']
+    viewer.layers.unselect_all()
+    layer.selected = True
     seg = layer.data
     next_label = seg.max() + 1
     layer.mode = 'paint'
     layer.selected_label = next_label
 
 
-#
-# keybindings for updating the layers
-#
+@Viewer.bind_key('Shift-S')
+def save(viewer, is_partial=False):
+    to_save = [
+        (viewer.layers['cell-segmentation'], {}, 'labels')
+    ]
+    save_labels(os.getcwd(), to_save, is_partial)
 
 
 @Viewer.bind_key('u')

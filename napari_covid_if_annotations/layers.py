@@ -1,10 +1,54 @@
+import os
+
+import h5py
 import numpy as np
 import skimage.color as skc
 from vispy.color import Colormap
 
 from .image_utils import (get_centroids, get_edge_segmentation, map_labels_to_edges,
                           normalize, quantile_normalize)
-from .io_utils import has_table, read_image, read_table
+from .io_utils import has_table, read_image, read_table, write_image, write_table
+
+
+def save_labels(path, layers, is_partial=False):
+    layer = None
+    for this_layer, kwargs, layer_type in layers:
+        if layer_type == 'labels':
+            layer = this_layer
+            break
+    assert layer is not None
+
+    seg = layer.data
+    metadata = layer.metadata
+    seg_ids = metadata['seg_ids']
+    infected_labels = metadata['infected_labels']
+    assert len(seg_ids) == len(infected_labels)
+    assert infected_labels[0] == 0
+    # TODO set to if partial if not all cells have been annotated
+    # if any(infected_labels[1:] == 0):
+    #    is_partial = True
+    # TODO warn if we only have partial annotations
+
+    infected_labels_columns = ['label_id', 'infected_label']
+    infected_labels_table = np.concatenate([seg_ids[:, None], infected_labels[:, None]], axis=1)
+
+    # we modify the save path, because we don't want to let the filenaming
+    # patterns go out of sync
+    if os.path.isdir(path):
+        save_folder = path
+    else:
+        save_folder = os.path.split(path)[0]
+
+    filename = metadata['filename']
+    identifier = 'partial_annotations' if is_partial else 'annotations'
+    save_path = os.path.join(save_folder, f'{filename}_{identifier}.h5')
+
+    with h5py.File(save_path, 'a') as f:
+        write_image(f, 'cell-segmentation', seg)
+        write_table(f, 'infected_cell_labels', infected_labels_columns, infected_labels_table,
+                    force_write=True)
+
+    return [save_path]
 
 
 def get_raw_data(f, seg, saturation_factor):
@@ -77,11 +121,14 @@ def get_layers_from_file(f, saturation_factor=1., edge_width=2):
      infected_edges, infected_labels) = get_segmentation_data(f, seg, edge_width)
 
     # the keyword arguments passed to 'add_labels' for the cell segmentation layer
+    filename = os.path.split(f.filename)[1]
+    filename = os.path.splitext(filename)[0]
     seg_kwargs = {
         'name': 'cell-segmentation',
         'metadata': {'seg_ids': seg_ids,
                      'infected_labels': infected_labels,
-                     'hide_annotated_segments': False}
+                     'hide_annotated_segments': False,
+                     'filename': filename}
     }
 
     # the keyword arguments passed to 'add_image' for the edge layer
