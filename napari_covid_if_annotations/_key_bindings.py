@@ -2,6 +2,7 @@ import os
 
 import numpy as np
 from napari import Viewer
+from napari.layers.points import Points
 
 from .image_utils import get_edge_segmentation, get_centroids, map_labels_to_edges
 from .layers import get_centroid_properties, save_labels
@@ -103,8 +104,8 @@ def toggle_hide_annotated_segments(viewer):
 # keybindings for toggling the labels of the point layer
 #
 
-@Viewer.bind_key('.')
-def next_label(viewer, event=None):
+@Points.bind_key('.')
+def next_label(layer, event=None):
     """Keybinding to advance to the next label value in
     the labels list (defined near the top) with wraparound
 
@@ -112,11 +113,10 @@ def next_label(viewer, event=None):
     values for the currently selected points and also will be the values used for
     the next points that are added.
     """
-    points_layer = viewer.layers['infected-vs-control']
-    labels = points_layer.metadata['labels']
+    labels = layer.metadata['labels']
 
     # get the current properties and cell type value
-    current_properties = points_layer.current_properties
+    current_properties = layer.current_properties
     current_label = current_properties['cell_type'][0]
 
     # get the next label value with wraparound
@@ -126,38 +126,34 @@ def next_label(viewer, event=None):
 
     # set the new cell type value and update the current_properties
     current_properties['cell_type'] = np.array([new_label])
-    points_layer.current_properties = current_properties
+    layer.current_properties = current_properties
 
 
-def next_on_click(viewer, event):
+def next_on_click(layer, event):
     """Mouse click binding to advance the label of the selected point"""
-    # only perform toggling if in the selection mode and there are points selected
-    layer = viewer.layers['infected-vs-control']
 
     # only do stuff in selection mode
     if not layer.mode == 'select':
         return
 
-    # only do stuiff if next on click is registed with the viewer
-    if next_on_click not in viewer.mouse_drag_callbacks:
+    # only do stuff if we have next on click in the mouse bindings
+    if next_on_click not in layer.mouse_drag_callbacks:
         return
 
-    selected_data = layer.selected_data
-    previous_selection = layer.metadata.get('previous_selected_data', {})
-    has_selection = len(selected_data) > 0
-    same_selection = selected_data == previous_selection
+    # make sure that next on click is always the last callback in the mouse bindings
+    # otherwise we have unintended consequences when selecting a new node
+    if next_on_click in layer.mouse_drag_callbacks and next_on_click != layer.mouse_drag_callbacks[-1]:
+        layer.mouse_drag_callbacks.remove(next_on_click)
+        layer.mouse_drag_callbacks.append(next_on_click)
+        return
 
-    if has_selection and same_selection:
-        next_label(viewer)
-
-    viewer.layers['infected-vs-control'].metadata.update({'previous_selected_data': selected_data})
+    if len(layer.selected_data) > 0:
+        next_label(layer)
 
 
 def set_toggle_mode(viewer):
     """Keybinding to set the viewer selection mode and mouse callbacks
     for toggling selected points properties by clicking on them
     """
-    if next_on_click in viewer.mouse_drag_callbacks:
-        viewer.mouse_drag_callbacks.remove(next_on_click)
-    else:
-        viewer.mouse_drag_callbacks.append(next_on_click)
+    layer = viewer.layers['infected-vs-control']
+    layer.mouse_drag_callbacks.append(next_on_click)

@@ -30,12 +30,12 @@ def launch_covid_if_annotation_tool(path=None, saturation_factor=1, edge_width=2
             initialize_from_file(viewer, path,
                                  saturation_factor, edge_width)
 
-        # set the on click label toggle mode
-        set_toggle_mode(viewer)
-
         # connect the gui elements and modify layer functionality
         connect_to_viewer(viewer)
         modify_layers(viewer)
+
+        # set the on click label toggle mode
+        set_toggle_mode(viewer)
 
 
 if __name__ == '__main__':
