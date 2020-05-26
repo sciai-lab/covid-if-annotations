@@ -2,6 +2,23 @@ from magicgui import magicgui, register_type
 from napari import Viewer
 from ._key_bindings import update_layers, toggle_hide_annotated_segments, paint_new_label, save
 
+#
+# modify the layers
+#
+
+
+def modify_layers(viewer):
+    control_widgets = viewer.window.qt_viewer.controls.widgets
+
+    # disable the add point button in the infected-vs-control layer
+    points_controls = control_widgets[viewer.layers['infected-vs-control']]
+    points_controls.addition_button.setEnabled(False)
+
+
+#
+# additional gui elements
+#
+
 
 def get_viewers(gui, *args):
     try:

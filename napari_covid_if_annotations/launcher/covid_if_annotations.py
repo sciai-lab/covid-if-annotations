@@ -2,7 +2,7 @@ import argparse
 import h5py
 import napari
 
-from napari_covid_if_annotations.gui import connect_to_viewer
+from napari_covid_if_annotations.gui import connect_to_viewer, modify_layers
 from napari_covid_if_annotations.layers import get_layers_from_file
 from napari_covid_if_annotations._key_bindings import set_toggle_mode
 
@@ -33,8 +33,9 @@ def launch_covid_if_annotation_tool(path=None, saturation_factor=1, edge_width=2
         # set the on click label toggle mode
         set_toggle_mode(viewer)
 
-        # connect the gui elements
+        # connect the gui elements and modify layer functionality
         connect_to_viewer(viewer)
+        modify_layers(viewer)
 
 
 if __name__ == '__main__':

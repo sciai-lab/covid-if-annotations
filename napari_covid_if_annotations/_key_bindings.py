@@ -153,9 +153,7 @@ def next_on_click(viewer, event):
     viewer.layers['infected-vs-control'].metadata.update({'previous_selected_data': selected_data})
 
 
-# also have a gui element to activate/deactivate?
-@Viewer.bind_key('t')
-def set_toggle_mode(viewer, event=None):
+def set_toggle_mode(viewer):
     """Keybinding to set the viewer selection mode and mouse callbacks
     for toggling selected points properties by clicking on them
     """
