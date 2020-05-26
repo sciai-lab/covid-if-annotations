@@ -9,11 +9,18 @@ from .layers import get_centroid_properties, save_labels
 
 
 def update_infected_labels_from_segmentation(seg_ids, prev_seg_ids, infected_labels):
+    assert len(infected_labels) == len(prev_seg_ids), f"{len(infected_labels)}, {len(prev_seg_ids)}"
     if np.array_equal(seg_ids, prev_seg_ids):
         return infected_labels
     else:
-        # TODO update the infected labels according to the diff in seg_ids
-        pass
+        new_infected_labels = np.zeros_like(seg_ids)
+        mask_a = np.isin(seg_ids, prev_seg_ids)
+        mask_b = np.isin(prev_seg_ids, seg_ids)
+
+        new_infected_labels[mask_a] = infected_labels[mask_b]
+        assert len(new_infected_labels) == len(seg_ids), f"{len(new_infected_labels)}, {len(seg_ids)}"
+
+        return new_infected_labels
 
 
 # NOTE we expect len(point_labels) == len(infected_labels) - 1
@@ -79,8 +86,11 @@ def update_layers(viewer):
     # get the new centroids and update the centroid properties
     centroids = get_centroids(seg)
     properties = get_centroid_properties(centroids, infected_labels)
+
     viewer.layers['infected-vs-control'].data = centroids
     viewer.layers['infected-vs-control'].properties = properties
+    # need to call refresh colors here, otherwise new centroids don't get the correct color
+    viewer.layers['infected-vs-control'].refresh_colors()
 
     if hide_annotated_segments:
         infected_edges = np.zeros_like(seg)
