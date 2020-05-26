@@ -1,5 +1,6 @@
 from magicgui import magicgui, register_type
 from napari import Viewer
+from qtpy import QtWidgets
 from ._key_bindings import update_layers, toggle_hide_annotated_segments, paint_new_label, save
 
 #
@@ -69,3 +70,7 @@ def connect_to_viewer(viewer):
     # the paint new labels button
     paint_gui = paint_new_label_gui.Gui()
     viewer.window.add_dock_widget(paint_gui)
+
+    # TODO instead of this, do "Labels: Unlabeled, Infected, Control, Uncertain" and each in their respective color
+    tooltip = QtWidgets.QLabel("White: unlabeled; Red: infected; Cyan: control; Yellow: uncertain")
+    viewer.window.add_dock_widget(tooltip)
