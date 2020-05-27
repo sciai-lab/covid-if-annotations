@@ -8,6 +8,15 @@ from .image_utils import get_edge_segmentation, get_centroids, map_labels_to_edg
 from .layers import get_centroid_properties, save_labels
 
 
+# the event object will have the following useful things:
+# event.source -> the full viewer.layers object itself
+# event.item -> the specific layer that cause the change
+# event.type -> a string like 'added', 'removed'
+def on_layer_change(event):
+    if isinstance(event.item, Points) and event.type == 'added':
+        event.item.mouse_drag_callbacks.append(next_on_click)
+
+
 def update_infected_labels_from_segmentation(seg_ids, prev_seg_ids, infected_labels):
     assert len(infected_labels) == len(prev_seg_ids), f"{len(infected_labels)}, {len(prev_seg_ids)}"
     if np.array_equal(seg_ids, prev_seg_ids):
@@ -30,27 +39,11 @@ def update_infected_labels_from_points(point_labels, infected_labels):
     return np.array([0] + point_labels.tolist())
 
 
-def modify_layers(viewer):
+def modify_points_layer(viewer):
     control_widgets = viewer.window.qt_viewer.controls.widgets
-
     # disable the add point button in the infected-vs-control layer
     points_controls = control_widgets[viewer.layers['infected-vs-control']]
     points_controls.addition_button.setEnabled(False)
-
-
-def set_toggle_mode(viewer):
-    """Keybinding to set the viewer selection mode and mouse callbacks
-    for toggling selected points properties by clicking on them
-    """
-    layer = viewer.layers['infected-vs-control']
-    if next_on_click not in layer.mouse_drag_callbacks:
-        layer.mouse_drag_callbacks.append(next_on_click)
-
-
-def modify_viewer(viewer):
-    modify_layers(viewer)
-    set_toggle_mode(viewer)
-    return viewer
 
 
 #
@@ -59,8 +52,8 @@ def modify_viewer(viewer):
 
 @Viewer.bind_key('n')
 def paint_new_label(viewer):
-    # FIXME this should be calloed on initialization, but don't know how for io hook
-    modify_viewer(viewer)
+    # FIXME this should be calloed on initialization, but don't know how to do it via the events
+    modify_points_layer(viewer)
 
     layer = viewer.layers['cell-segmentation']
     viewer.layers.unselect_all()
@@ -73,8 +66,8 @@ def paint_new_label(viewer):
 
 @Viewer.bind_key('Shift-S')
 def _save_labels(viewer, is_partial=False):
-    # FIXME this should be calloed on initialization, but don't know how for io hook
-    modify_viewer(viewer)
+    # FIXME this should be calloed on initialization, but don't know how to do it via the events
+    modify_points_layer(viewer)
 
     to_save = [
         (viewer.layers['cell-segmentation'], {}, 'labels')
@@ -84,8 +77,8 @@ def _save_labels(viewer, is_partial=False):
 
 @Viewer.bind_key('u')
 def update_layers(viewer):
-    # FIXME this should be calloed on initialization, but don't know how for io hook
-    modify_viewer(viewer)
+    # FIXME this should be calloed on initialization, but don't know how to do it via the events
+    modify_points_layer(viewer)
 
     # get the segmentation as well as the previous seg ids and infected labels
     # from the segmentation layer
@@ -132,7 +125,7 @@ def update_layers(viewer):
 @Viewer.bind_key('h')
 def toggle_hide_annotated_segments(viewer):
     # FIXME this should be calloed on initialization, but don't know how for io hook
-    modify_viewer(viewer)
+    modify_points_layer(viewer)
 
     seg_layer = viewer.layers['cell-segmentation']
     metadata = seg_layer.metadata
