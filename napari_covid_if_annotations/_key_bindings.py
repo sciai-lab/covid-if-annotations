@@ -46,7 +46,8 @@ def paint_new_label(viewer):
 
 
 @Viewer.bind_key('Shift-S')
-def save(viewer, is_partial=False):
+def _save_labels(viewer, is_partial=False):
+    print(viewer)
     to_save = [
         (viewer.layers['cell-segmentation'], {}, 'labels')
     ]

@@ -25,7 +25,7 @@ H5_EXTS = ['.hdf', '.hdf5', '.h5']
 @napari_hook_implementation
 def napari_get_writer(path, layers):
 
-    print("Hook called!")
+    print("Hook!")
 
     ext = os.path.splitext(path)[1]
     if not ext.lower() in H5_EXTS:
