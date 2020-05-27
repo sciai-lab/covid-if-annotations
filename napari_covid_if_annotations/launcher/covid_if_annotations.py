@@ -34,6 +34,7 @@ def launch_covid_if_annotation_tool(path=None, saturation_factor=1, edge_width=2
         # connect the gui elements and modify layer functionality
         connect_to_viewer(viewer)
 
+        # TODO we also need to call this after the read io hook was called, but I don't know how
         # set the on click label toggle mode
         if with_data:
             modify_viewer(viewer)

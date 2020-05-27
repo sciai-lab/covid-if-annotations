@@ -2,7 +2,10 @@ import os
 from magicgui import magicgui, register_type
 from napari import Viewer
 from qtpy import QtWidgets
-from ._key_bindings import update_layers, toggle_hide_annotated_segments, paint_new_label, _save_labels
+from ._key_bindings import (update_layers,
+                            toggle_hide_annotated_segments,
+                            paint_new_label,
+                            _save_labels)
 
 #
 # additional gui elements
@@ -20,11 +23,9 @@ def get_viewers(gui, *args):
 register_type(Viewer, choices=get_viewers)
 
 
-# FIXME the gui is broken and gets passed None !
 # TODO expose the partial parameter to the gui
 @magicgui(call_button='save annotations [shfit + s]', viewer={'visible': False})
 def save_gui(viewer: Viewer):
-    print(viewer)
     _save_labels(viewer)
 
 
@@ -54,8 +55,6 @@ def connect_to_viewer(viewer):
     paint_gui = paint_new_label_gui.Gui()
 
     # make a tooltop about the label colors
-    # TODO instead of this, do "Labels: Unlabeled, Infected, Control, Uncertain" and each in their respective color
-    # tooltip = QtWidgets.QLabel("White: unlabeled; Red: infected; Cyan: control; Yellow: uncertain")
     tooltip = QtWidgets.QLabel()
 
     # TODO see if we can get this working

@@ -50,6 +50,7 @@ def set_toggle_mode(viewer):
 def modify_viewer(viewer):
     modify_layers(viewer)
     set_toggle_mode(viewer)
+    return viewer
 
 
 #
@@ -58,8 +59,9 @@ def modify_viewer(viewer):
 
 @Viewer.bind_key('n')
 def paint_new_label(viewer):
-    # FIXME this is hacky, we need to make this clean
+    # FIXME this should be calloed on initialization, but don't know how for io hook
     modify_viewer(viewer)
+
     layer = viewer.layers['cell-segmentation']
     viewer.layers.unselect_all()
     layer.selected = True
@@ -71,9 +73,9 @@ def paint_new_label(viewer):
 
 @Viewer.bind_key('Shift-S')
 def _save_labels(viewer, is_partial=False):
-    # FIXME this is hacky, we need to make this clean
+    # FIXME this should be calloed on initialization, but don't know how for io hook
     modify_viewer(viewer)
-    print(viewer)
+
     to_save = [
         (viewer.layers['cell-segmentation'], {}, 'labels')
     ]
@@ -82,7 +84,7 @@ def _save_labels(viewer, is_partial=False):
 
 @Viewer.bind_key('u')
 def update_layers(viewer):
-    # FIXME this is hacky, we need to make this clean
+    # FIXME this should be calloed on initialization, but don't know how for io hook
     modify_viewer(viewer)
 
     # get the segmentation as well as the previous seg ids and infected labels
@@ -129,7 +131,7 @@ def update_layers(viewer):
 
 @Viewer.bind_key('h')
 def toggle_hide_annotated_segments(viewer):
-    # FIXME this is hacky, we need to make this clean
+    # FIXME this should be calloed on initialization, but don't know how for io hook
     modify_viewer(viewer)
 
     seg_layer = viewer.layers['cell-segmentation']
