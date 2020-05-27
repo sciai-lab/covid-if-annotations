@@ -25,15 +25,17 @@ H5_EXTS = ['.hdf', '.hdf5', '.h5']
 @napari_hook_implementation
 def napari_get_writer(path, layers):
 
+    print("Hook called!")
+
     ext = os.path.splitext(path)[1]
     if not ext.lower() in H5_EXTS:
         return None
 
     # make sure we have exactly one labels layer
-    if len([layer[-1] == 'labels' for layer in layers]) != 1:
-        return None
+    if any(layer == 'labels' for layer in layers):
+        return save_labels
 
-    return save_labels
+    return None
 
 
 @napari_hook_implementation

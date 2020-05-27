@@ -55,22 +55,26 @@ def paint_new_label_gui(viewer: Viewer):
 def connect_to_viewer(viewer):
     """ Add all gui elements to the viewer
     """
-    # the save button
+
+    # get gui buttons for the additional functionality
     saving_gui = save_gui.Gui()
-    viewer.window.add_dock_widget(saving_gui)
-
-    # the update layers button
     update_gui = update_layers_gui.Gui()
-    viewer.window.add_dock_widget(update_gui)
-
-    # the hide annotated segments button
     hide_gui = toggle_hide_annotated_segments_gui.Gui()
-    viewer.window.add_dock_widget(hide_gui)
-
-    # the paint new labels button
     paint_gui = paint_new_label_gui.Gui()
-    viewer.window.add_dock_widget(paint_gui)
 
+    # make a tooltop about the label colors
     # TODO instead of this, do "Labels: Unlabeled, Infected, Control, Uncertain" and each in their respective color
     tooltip = QtWidgets.QLabel("White: unlabeled; Red: infected; Cyan: control; Yellow: uncertain")
-    viewer.window.add_dock_widget(tooltip)
+
+    # merge all the gui elements
+    my_gui = QtWidgets.QWidget()
+    layout = QtWidgets.QVBoxLayout()
+    my_gui.setLayout(layout)
+    layout.addWidget(tooltip)
+    layout.addWidget(saving_gui)
+    layout.addWidget(update_gui)
+    layout.addWidget(hide_gui)
+    layout.addWidget(paint_gui)
+
+    # add them to the viewer
+    viewer.window.add_dock_widget(my_gui, area='right', allowed_areas=['right', 'left'])
