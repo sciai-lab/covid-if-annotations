@@ -13,8 +13,11 @@ from .layers import get_centroid_properties, save_labels
 # event.item -> the specific layer that cause the change
 # event.type -> a string like 'added', 'removed'
 def on_layer_change(event):
-    if isinstance(event.item, Points) and event.type == 'added':
-        event.item.mouse_drag_callbacks.append(next_on_click)
+    try:
+        if isinstance(event.item, Points) and event.type == 'added':
+            event.item.mouse_drag_callbacks.append(next_on_click)
+    except AttributeError:
+        pass
 
 
 def update_infected_labels_from_segmentation(seg_ids, prev_seg_ids, infected_labels):

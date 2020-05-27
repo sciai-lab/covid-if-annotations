@@ -15,7 +15,7 @@ import h5py
 
 from napari_plugin_engine import napari_hook_implementation
 
-from .layers import get_layers_from_file, save_labels
+from .layers import get_layers_from_file, save_labels, load_labels
 
 
 H5_EXTS = ['.hdf', '.hdf5', '.h5']
@@ -63,7 +63,6 @@ def napari_get_reader(path):
     if not os.path.splitext(path)[1].lower() in H5_EXTS:
         return None
 
-    # otherwise we return the *function* that can read ``path``.
     return reader_function
 
 
@@ -96,6 +95,13 @@ def reader_function(path):
     layers = []
 
     with h5py.File(path, 'r') as f:
-        layers = get_layers_from_file(f)
+        # check if we have raw data
+        # -> load all data
+        if 'serum_IgG' in f:
+            layers = get_layers_from_file(f)
+        # otherwise, we only have labels
+        # -> load them
+        else:
+            layers = load_labels(f)
 
     return layers

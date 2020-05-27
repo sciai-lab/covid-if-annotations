@@ -10,6 +10,23 @@ from .image_utils import (get_centroids, get_edge_segmentation, map_labels_to_ed
 from .io_utils import has_table, read_image, read_table, write_image, write_table
 
 
+def load_labels(f):
+    seg = read_image(f, 'cell_segmentation')
+    seg_ids, _, _, infected_labels = get_segmentation_data(f, seg, edge_width=1)
+
+    filename = os.path.split(f.filename)[1]
+    filename = os.path.splitext(filename)[0]
+    seg_kwargs = {
+        'name': 'cell-segmentation',
+        'metadata': {'seg_ids': seg_ids,
+                     'infected_labels': infected_labels,
+                     'hide_annotated_segments': False,
+                     'filename': filename}
+    }
+    layers = [(seg, seg_kwargs, 'labels')]
+    return layers
+
+
 def save_labels(path, layers, is_partial=False):
     layer = None
     for this_layer, kwargs, layer_type in layers:
@@ -44,7 +61,7 @@ def save_labels(path, layers, is_partial=False):
     save_path = os.path.join(save_folder, f'{filename}_{identifier}.h5')
 
     with h5py.File(save_path, 'a') as f:
-        write_image(f, 'cell-segmentation', seg)
+        write_image(f, 'cell_segmentation', seg)
         write_table(f, 'infected_cell_labels', infected_labels_columns, infected_labels_table,
                     force_write=True)
 
