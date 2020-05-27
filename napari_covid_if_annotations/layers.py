@@ -99,7 +99,7 @@ def get_segmentation_data(f, seg, edge_width, infected_label_name='infected_cell
     assert seg_ids.shape == infected_labels.shape, f"{seg_ids.shape}, {infected_labels.shape}"
 
     edges = get_edge_segmentation(seg, edge_width)
-    infected_edges = map_labels_to_edges(edges, seg_ids, infected_labels)
+    infected_edges = map_labels_to_edges(edges, seg_ids, infected_labels, remap_background=4)
 
     centroids = get_centroids(seg)
 
@@ -134,17 +134,18 @@ def get_layers_from_file(f, saturation_factor=1., edge_width=2):
     # the keyword arguments passed to 'add_image' for the edge layer
     # custom colormap to have colors in sync with the point layer
     cmap = Colormap([
-        [0., 0., 0., 0.],  # label 0 is fully transparent
+        [1., 1., 1., 1.],  # label 0 is white
         [1., 0., 0., 1.],  # label 1 is red
         [0., 1., 1., 1.],  # label 2 is cyan
         [1., 1., 0., 1.],  # label 3 is yellow
+        [0., 0., 0., 0.],  # Background is transparent
     ])
     edge_kwargs = {
         'name': 'cell-outlines',
         'visible': False,
         'colormap': cmap,
         'metadata': {'edge_width': edge_width},
-        'contrast_limits': [0, 3]
+        'contrast_limits': [0, 4]
     }
 
     # napari reorders the labels (it casts np.unique)

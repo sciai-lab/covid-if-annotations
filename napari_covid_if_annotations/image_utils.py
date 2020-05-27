@@ -37,10 +37,14 @@ def apply_dict_to_array(x, my_dict):
     return np.array([my_dict[val] for val in unique_values])[inverse_indices].reshape(x.shape)
 
 
-def map_labels_to_edges(edges, seg_ids, labels, hide_ids=None):
+def map_labels_to_edges(edges, seg_ids, labels, hide_ids=None, remap_background=None):
     assert len(seg_ids) == len(labels)
     replace_dict = dict(zip(seg_ids, labels))
+
     if hide_ids is not None:
         for hide_id in hide_ids:
-            replace_dict[hide_id] = 0
+            replace_dict[hide_id] = 0 if remap_background is None else remap_background
+    if remap_background is not None:
+        replace_dict[0] = remap_background
+
     return apply_dict_to_array(edges, replace_dict)

@@ -76,12 +76,12 @@ def update_layers(viewer):
     metadata.update({'seg_ids': seg_ids, 'infected_labels': infected_labels})
 
     hide_annotated_segments = metadata['hide_annotated_segments']
-    # TODO the most elegant vay to hide annotated segments would be to
-    # change the color map for these segment ids. I don't know if this is possible / how to do it.
     if hide_annotated_segments:
-        pass
-        # hidden_segments = seg_ids[infected_labels > 0]
+        # TODO the most elegant vay to hide annotated segments would be to
+        hidden_segments = seg_ids[infected_labels > 0]
         # color_dict = {seg_id: 'transparent' for seg_id in hidden_segments}
+    else:
+        hidden_segments = None
     viewer.layers['cell-segmentation'].metadata = metadata
 
     # get the new centroids and update the centroid properties
@@ -93,12 +93,9 @@ def update_layers(viewer):
     # need to call refresh colors here, otherwise new centroids don't get the correct color
     viewer.layers['infected-vs-control'].refresh_colors()
 
-    if hide_annotated_segments:
-        infected_edges = np.zeros_like(seg)
-    else:
-        edge_width = viewer.layers['cell-outlines'].metadata['edge_width']
-        edges = get_edge_segmentation(seg, edge_width)
-        infected_edges = map_labels_to_edges(edges, seg_ids, infected_labels)
+    edge_width = viewer.layers['cell-outlines'].metadata['edge_width']
+    edges = get_edge_segmentation(seg, edge_width)
+    infected_edges = map_labels_to_edges(edges, seg_ids, infected_labels, hidden_segments, remap_background=4)
     viewer.layers['cell-outlines'].data = infected_edges
 
 
