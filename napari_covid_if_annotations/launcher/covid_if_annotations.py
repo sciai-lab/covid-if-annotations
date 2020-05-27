@@ -2,9 +2,9 @@ import argparse
 import h5py
 import napari
 
-from napari_covid_if_annotations.gui import connect_to_viewer, modify_layers
 from napari_covid_if_annotations.layers import get_layers_from_file
-from napari_covid_if_annotations._key_bindings import set_toggle_mode
+from napari_covid_if_annotations.gui import connect_to_viewer
+from napari_covid_if_annotations._key_bindings import modify_viewer
 
 
 def initialize_from_file(viewer, path, saturation_factor, edge_width):
@@ -23,19 +23,20 @@ def launch_covid_if_annotation_tool(path=None, saturation_factor=1, edge_width=2
     Based on https://github.com/transformify-plugins/segmentify/blob/master/examples/launch.py
     """
 
+    with_data = path is not None
     with napari.gui_qt():
         viewer = napari.Viewer()
 
-        if path is not None:
+        if with_data:
             initialize_from_file(viewer, path,
                                  saturation_factor, edge_width)
 
         # connect the gui elements and modify layer functionality
         connect_to_viewer(viewer)
-        modify_layers(viewer)
 
         # set the on click label toggle mode
-        set_toggle_mode(viewer)
+        if with_data:
+            modify_viewer(viewer)
 
 
 if __name__ == '__main__':

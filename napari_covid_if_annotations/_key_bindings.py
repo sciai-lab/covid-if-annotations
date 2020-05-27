@@ -30,12 +30,36 @@ def update_infected_labels_from_points(point_labels, infected_labels):
     return np.array([0] + point_labels.tolist())
 
 
+def modify_layers(viewer):
+    control_widgets = viewer.window.qt_viewer.controls.widgets
+
+    # disable the add point button in the infected-vs-control layer
+    points_controls = control_widgets[viewer.layers['infected-vs-control']]
+    points_controls.addition_button.setEnabled(False)
+
+
+def set_toggle_mode(viewer):
+    """Keybinding to set the viewer selection mode and mouse callbacks
+    for toggling selected points properties by clicking on them
+    """
+    layer = viewer.layers['infected-vs-control']
+    if next_on_click not in layer.mouse_drag_callbacks:
+        layer.mouse_drag_callbacks.append(next_on_click)
+
+
+def modify_viewer(viewer):
+    modify_layers(viewer)
+    set_toggle_mode(viewer)
+
+
 #
 # keybindings for the viewer
 #
 
 @Viewer.bind_key('n')
 def paint_new_label(viewer):
+    # FIXME this is hacky, we need to make this clean
+    modify_viewer(viewer)
     layer = viewer.layers['cell-segmentation']
     viewer.layers.unselect_all()
     layer.selected = True
@@ -47,6 +71,8 @@ def paint_new_label(viewer):
 
 @Viewer.bind_key('Shift-S')
 def _save_labels(viewer, is_partial=False):
+    # FIXME this is hacky, we need to make this clean
+    modify_viewer(viewer)
     print(viewer)
     to_save = [
         (viewer.layers['cell-segmentation'], {}, 'labels')
@@ -56,6 +82,8 @@ def _save_labels(viewer, is_partial=False):
 
 @Viewer.bind_key('u')
 def update_layers(viewer):
+    # FIXME this is hacky, we need to make this clean
+    modify_viewer(viewer)
 
     # get the segmentation as well as the previous seg ids and infected labels
     # from the segmentation layer
@@ -101,6 +129,9 @@ def update_layers(viewer):
 
 @Viewer.bind_key('h')
 def toggle_hide_annotated_segments(viewer):
+    # FIXME this is hacky, we need to make this clean
+    modify_viewer(viewer)
+
     seg_layer = viewer.layers['cell-segmentation']
     metadata = seg_layer.metadata
     metadata['hide_annotated_segments'] = not metadata['hide_annotated_segments']
@@ -157,11 +188,3 @@ def next_on_click(layer, event):
 
     if len(layer.selected_data) > 0:
         next_label(layer)
-
-
-def set_toggle_mode(viewer):
-    """Keybinding to set the viewer selection mode and mouse callbacks
-    for toggling selected points properties by clicking on them
-    """
-    layer = viewer.layers['infected-vs-control']
-    layer.mouse_drag_callbacks.append(next_on_click)
