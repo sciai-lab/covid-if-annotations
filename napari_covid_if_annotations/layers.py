@@ -10,10 +10,7 @@ from .image_utils import (get_centroids, get_edge_segmentation, map_labels_to_ed
 from .io_utils import has_table, read_image, read_table, write_image, write_table
 
 
-def load_labels(f):
-    seg = read_image(f, 'cell_segmentation')
-    seg_ids, _, _, infected_labels = get_segmentation_data(f, seg, edge_width=1)
-
+def get_seg_kwargs(f, seg_ids, infected_labels):
     filename = os.path.split(f.filename)[1]
     filename = os.path.splitext(filename)[0]
     seg_kwargs = {
@@ -23,7 +20,45 @@ def load_labels(f):
                      'hide_annotated_segments': False,
                      'filename': filename}
     }
-    layers = [(seg, seg_kwargs, 'labels')]
+    return seg_kwargs
+
+
+def get_centroid_kwargs(centroids, infected_labels):
+    # napari reorders the labels (it casts np.unique)
+    # so for now it's easier to just use numeric labels and have separate
+    # label-names to not get confused by reordering
+    label_names = ['unlabeled', 'infected', 'control', 'uncertain']
+    labels = [0, 1, 2, 3]
+    face_color_cycle = ['white', 'red', 'cyan', 'yellow']
+
+    properties = get_centroid_properties(centroids, infected_labels)
+    centroid_kwargs = {
+        'name': 'infected-vs-control',
+        'properties': properties,
+        'size': 15,
+        'edge_width': 5,
+        'edge_color': 'black',
+        'edge_colormap': 'gray',
+        'face_color': 'cell_type',
+        'face_color_cycle': face_color_cycle,
+        'metadata': {'labels': labels,
+                     'label_names': label_names}
+    }
+    return centroid_kwargs
+
+
+def load_labels(f):
+    seg = read_image(f, 'cell_segmentation')
+    seg_ids, centroids, _, infected_labels = get_segmentation_data(f, seg, edge_width=1)
+
+    seg_kwargs = get_seg_kwargs(f, seg_ids, infected_labels)
+
+    point_kwargs = get_centroid_kwargs(centroids, infected_labels)
+
+    layers = [
+        (seg, seg_kwargs, 'labels'),
+        (centroids, point_kwargs, 'points')
+    ]
     return layers
 
 
@@ -138,15 +173,7 @@ def get_layers_from_file(f, saturation_factor=1., edge_width=2):
      infected_edges, infected_labels) = get_segmentation_data(f, seg, edge_width)
 
     # the keyword arguments passed to 'add_labels' for the cell segmentation layer
-    filename = os.path.split(f.filename)[1]
-    filename = os.path.splitext(filename)[0]
-    seg_kwargs = {
-        'name': 'cell-segmentation',
-        'metadata': {'seg_ids': seg_ids,
-                     'infected_labels': infected_labels,
-                     'hide_annotated_segments': False,
-                     'filename': filename}
-    }
+    seg_kwargs = get_seg_kwargs(f, seg_ids, infected_labels)
 
     # the keyword arguments passed to 'add_image' for the edge layer
     # custom colormap to have colors in sync with the point layer
@@ -165,26 +192,9 @@ def get_layers_from_file(f, saturation_factor=1., edge_width=2):
         'contrast_limits': [0, 4]
     }
 
-    # napari reorders the labels (it casts np.unique)
-    # so for now it's easier to just use numeric labels and have separate
-    # label-names to not get confused by reordering
-    label_names = ['unlabeled', 'infected', 'control', 'uncertain']
-    labels = [0, 1, 2, 3]
-    face_color_cycle = ['white', 'red', 'cyan', 'yellow']
-
-    properties = get_centroid_properties(centroids, infected_labels)
-    centroid_kwargs = {
-        'name': 'infected-vs-control',
-        'properties': properties,
-        'size': 15,
-        'edge_width': 5,
-        'edge_color': 'black',
-        'edge_colormap': 'gray',
-        'face_color': 'cell_type',
-        'face_color_cycle': face_color_cycle,
-        'metadata': {'labels': labels,
-                     'label_names': label_names}
-    }
+    # the keyword arguments passed to 'add_points' for the
+    # centroid layer
+    centroid_kwargs = get_centroid_kwargs(centroids, infected_labels)
 
     layers = [
         (raw, {'name': 'raw'}, 'image'),

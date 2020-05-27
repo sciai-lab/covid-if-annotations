@@ -3,9 +3,18 @@ import os
 import numpy as np
 from napari import Viewer
 from napari.layers.points import Points
+from napari.layers.labels import Labels
 
 from .image_utils import get_edge_segmentation, get_centroids, map_labels_to_edges
 from .layers import get_centroid_properties, save_labels
+
+
+def replace_layer(new_layer, layers, name_to_replace):
+    for layer in layers:
+        if layer.name == name_to_replace:
+            layer.data = new_layer.data
+            layer.metadata = new_layer.metadata
+    layers.remove(new_layer.name)
 
 
 # the event object will have the following useful things:
@@ -14,6 +23,21 @@ from .layers import get_centroid_properties, save_labels
 # event.type -> a string like 'added', 'removed'
 def on_layer_change(event):
     try:
+        # if we add new labels or new points, we need to replace instead
+        # of adding them
+        if isinstance(event.item, Labels) and event.type == 'added':
+            layers = event.source
+            layer = event.item
+            if len([ll for ll in layers if isinstance(ll, Labels)]) > 1:
+                replace_layer(layer, layers, 'cell-segmentation')
+
+        if isinstance(event.item, Points) and event.type == 'added':
+            layers = event.source
+            layer = event.item
+            if len([ll for ll in layers if isinstance(ll, Points)]) > 1:
+                replace_layer(event.item, layers, 'infected-vs-control')
+
+        # add the 'change label on click' functionality to the points layer
         if isinstance(event.item, Points) and event.type == 'added':
             event.item.mouse_drag_callbacks.append(next_on_click)
     except AttributeError:
@@ -42,6 +66,7 @@ def update_infected_labels_from_points(point_labels, infected_labels):
     return np.array([0] + point_labels.tolist())
 
 
+# TODO we should also disable removing all the layers!
 def modify_points_layer(viewer):
     control_widgets = viewer.window.qt_viewer.controls.widgets
     # disable the add point button in the infected-vs-control layer
