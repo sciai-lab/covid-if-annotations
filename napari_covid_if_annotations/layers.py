@@ -120,6 +120,9 @@ def get_layers_from_file(f, saturation_factor=1., edge_width=2):
     (seg_ids, centroids,
      infected_edges, infected_labels) = get_segmentation_data(f, seg, edge_width)
 
+    nucleus_seg = read_image(f, 'nucleus_segmentation')
+    bd = read_image(f, 'boundaries')
+
     # the keyword arguments passed to 'add_labels' for the cell segmentation layer
     filename = os.path.split(f.filename)[1]
     filename = os.path.splitext(filename)[0]
@@ -169,11 +172,19 @@ def get_layers_from_file(f, saturation_factor=1., edge_width=2):
                      'label_names': label_names}
     }
 
+    cmap = Colormap([
+        [0., 0., 0., 0.],  # label 0 is white
+        [1., 1., 1., 1.],  # label 1 is black
+    ])
+
     layers = [
         (raw, {'name': 'raw'}, 'image'),
         (marker, {'name': 'virus-marker', 'visible': False}, 'image'),
         (seg, seg_kwargs, 'labels'),
         (infected_edges, edge_kwargs, 'image'),
-        (centroids, centroid_kwargs, 'points')
+        (infected_edges != 4, {'name': 'edges', 'colormap': cmap, 'contrast_limits': [0, 1]}, 'image'),
+        (centroids, centroid_kwargs, 'points'),
+        (nucleus_seg, {'name': 'nucleus'}, 'labels'),
+        (bd, {'name': 'boundaries'}, 'image')
     ]
     return layers
