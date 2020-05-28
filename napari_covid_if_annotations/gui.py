@@ -1,5 +1,5 @@
 import os
-from qtpy.QtWidgets import QLabel, QPushButton, QWidget, QVBoxLayout
+from qtpy.QtWidgets import QLabel, QPushButton
 from ._key_bindings import (
     update_layers,
     toggle_hide_annotated_segments,
@@ -38,17 +38,8 @@ def connect_to_viewer(viewer):
         qtext += "<br><font color='cyan'>Control</font> <br> <font color='yellow'>Uncertain</font>"
         tooltip.setText(qtext)
 
-    # merge all the gui elements
-    my_gui = QWidget()
-    layout = QVBoxLayout()
-
-    my_gui.setLayout(layout)
-    layout.addWidget(tooltip)
-    layout.addWidget(update_gui_btn)
-    layout.addWidget(hide_gui_btn)
-    layout.addWidget(paint_gui_btn)
-    layout.addWidget(save_gui_btn)
-    layout.addStretch()
-
-    # add them to the viewer
-    viewer.window.add_dock_widget(my_gui, area="right", allowed_areas=["right", "left"])
+    viewer.window.add_dock_widget(
+        [tooltip, update_gui_btn, hide_gui_btn, paint_gui_btn, save_gui_btn],
+        area="right",
+        allowed_areas=["right", "left"],
+    )
