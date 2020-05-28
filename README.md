@@ -17,6 +17,10 @@ It allows you to manually annotate 2D images of cells, starting from an exisitng
 
 TODO describe and add link for mac image [Download windows](https://files.ilastik.org/covid-if-annotations-setup-0.0.1dev11.exe).
 
+### Download an image to annotate
+
+TODO annotate.embl.de
+
 ### Open the input image
 
 Drag-and-drop the .h5 file you downloaded into the tool or use the File->Open menu item. After you do this, you should see an image like this:
@@ -37,6 +41,9 @@ Now, **get ready for labeling**: make the infected-vs-control overlay visible an
 That's it, you can now click on the white circles to give them labels! If you click and nothing happens, make sure the mouse is activated as shown above! To get the next color in the list, just click again. Don't forget, the yellow label is there for the cells where you can't decide. Here are my results after a few clicks:
 ![First labels](./img/first_labels.png)
 Keep going until you have all the cells labeled. **Don't forget to save your annotations frequently!** If you get really tired or bored and can't do the whole image, send us the partial result, that would already be very helpful!
+
+TODO proper criteria for labeling the cells
+
 ### Correct cell segmentations
 The segmentations you see here were produced by our current pipeline. They are automatic and thus not perfect. Here is what you do if you notice a segmentation error:
 
@@ -48,6 +55,14 @@ Now the pipette is for the color picker, the drop for filling and the pen for dr
 3. select the pen tool and paint on top of other cells to re-assign their pixels to the cell whose color you picked. I painted and my cell got better (what do I know, I'm not a cell biologist. At least it's now different).
 ![Segmentation](./img/segmentation_3.png)
 4. Now what if you want to paint a new cell that we missed? Press "n" on your keyboard to activate a new, unused label. Then paint your  new cell. Done!
+
+### Reload saved results
+
+TODO
+
+### Upload your results
+
+TODO
 
 
 ## For Developers
