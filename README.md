@@ -68,7 +68,7 @@ Now the pipette is for the color picker, the drop for filling and the pen for dr
 Keep going until you have all the cells labeled and all segmentation errors fixed.
 **Don't forget to save your results frequently by pressing "shfit + s"!**
 The results will be saved to a file called `"IMAGE_NAME_annotations.h5" in the same folder where you store the image.`
-If you get really tired or bored and can't do the whole image, send us the partial result, that would already be very helpful! You can also take breaks and [load the saved annotations]() again to continue later.
+If you get really tired or bored and can't do the whole image, send us the partial result, that would already be very helpful! You can also take breaks and [load the saved annotations](https://github.com/hci-unihd/covid-if-annotations#reload-saved-results) again to continue later.
 
 ### Reload saved results
 
