@@ -17,7 +17,7 @@ It allows you to manually annotate 2D images of cells, starting from an exisitng
 
 You can download the software here:
 - [Windows](https://files.ilastik.org/covid-if-annotations-setup-latest.exe).
-- Mac: coming soon.
+- [Mac](https://files.ilastik.org/covid-if-annotations_0.0.2dev5.app.tar.bz2)
 
 TODO add installation instructions
 
