@@ -13,13 +13,20 @@ It allows you to manually annotate 2D images of cells, starting from an exisitng
 
 ## Step-by-step guide
 
-### Download the software
+### Download and install the software
 
-TODO describe and add link for mac image [Download windows](https://files.ilastik.org/covid-if-annotations-setup-0.0.1dev11.exe).
+You can download the software here:
+- [Windows](https://files.ilastik.org/covid-if-annotations-setup-latest.exe).
+- Mac: coming soon.
+
+TODO add installation instructions
 
 ### Download an image to annotate
 
-TODO annotate.embl.de
+To obtain an image for annotation
+- Visit https://annotate.embl.de/ (only available from within the EMBL network)
+- `Register` and `Login`
+- Go to `Download` and press `Download Image` to get a new image
 
 ### Open the input image
 
@@ -40,9 +47,10 @@ Now, **get ready for labeling**: make the infected-vs-control overlay visible an
 ![Mouse](./img/mouse_active.png)
 That's it, you can now click on the white circles to give them labels! If you click and nothing happens, make sure the mouse is activated as shown above! To get the next color in the list, just click again. Don't forget, the yellow label is there for the cells where you can't decide. Here are my results after a few clicks:
 ![First labels](./img/first_labels.png)
-Keep going until you have all the cells labeled. **Don't forget to save your annotations frequently!** If you get really tired or bored and can't do the whole image, send us the partial result, that would already be very helpful!
 
-TODO proper criteria for labeling the cells
+You should label cells as control that show actual signal in the virus marker channel. Note that this channel is noisy,
+so if you can't tell if the signal you see is real or noise, mark the cell as uncertain.
+TODO maybe Severina or Vibor should expand on this
 
 ### Correct cell segmentations
 The segmentations you see here were produced by our current pipeline. They are automatic and thus not perfect. Here is what you do if you notice a segmentation error:
@@ -54,15 +62,32 @@ Now the pipette is for the color picker, the drop for filling and the pen for dr
 ![Segmentation](./img/segmentation_2.png)
 3. select the pen tool and paint on top of other cells to re-assign their pixels to the cell whose color you picked. I painted and my cell got better (what do I know, I'm not a cell biologist. At least it's now different).
 ![Segmentation](./img/segmentation_3.png)
-4. Now what if you want to paint a new cell that we missed? Press "n" on your keyboard to activate a new, unused label. Then paint your  new cell. Done!
+4. To see the changes you have made to the segmentation in the "infected-vs-control" and "cell-outlines", press "u".
+5. Now what if you want to paint a new cell that we missed? Press "n" on your keyboard to activate a new, unused label. Then paint your  new cell. Done!
+
+Keep going until you have all the cells labeled and all segmentation errors fixed.
+**Don't forget to save your results frequently by pressing "shfit + s"!**
+The results will be saved to a file called `"IMAGE_NAME_annotations.h5" in the same folder where you store the image.`
+If you get really tired or bored and can't do the whole image, send us the partial result, that would already be very helpful! You can also take breaks and [load the saved annotations]() again to continue later.
 
 ### Reload saved results
 
-TODO
+In order to continue labeling, you can reload the saved annotations:
+- Open the tool again and open the original image file.
+- Next, drag'n'drop the annotation results onto the viewer.
+- This will replace the initial segmentation with your corrections and also load the cell labels.
 
 ### Upload your results
 
-TODO
+- Go to https://annotate.embl.de/
+- Log in with your account
+- Go to `Upload`
+- Click `Browse...` and select your annotation result.
+- Press `Upload Images`
+
+### Contact us
+
+If you have feedback or run into issues join the "COVID-IF-annotations" channel on https://chat.embl.org or contact us directly.
 
 
 ## For Developers
@@ -99,7 +124,6 @@ Example data is [available here](https://oc.embl.de/index.php/s/IghxebboVxgpraU)
 - `.` cycle through the annotations for a selected point
 - `t` toggle annotation cycling by mouse click (not working yet!)
 - `Shift + s` save the current annotations (segmentation + infected-vs-control labels)
-
 
 
 ## Acknowledgements

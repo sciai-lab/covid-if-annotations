@@ -1,5 +1,3 @@
-import os
-
 import h5py
 import numpy as np
 import skimage.color as skc
@@ -11,14 +9,12 @@ from .io_utils import has_table, read_image, read_table, write_image, write_tabl
 
 
 def get_seg_kwargs(f, seg_ids, infected_labels):
-    filename = os.path.split(f.filename)[1]
-    filename = os.path.splitext(filename)[0]
     seg_kwargs = {
         'name': 'cell-segmentation',
         'metadata': {'seg_ids': seg_ids,
                      'infected_labels': infected_labels,
                      'hide_annotated_segments': False,
-                     'filename': filename}
+                     'filename': f.filename}
     }
     return seg_kwargs
 
@@ -86,14 +82,9 @@ def save_labels(path, layers, is_partial=False):
 
     # we modify the save path, because we don't want to let the filenaming
     # patterns go out of sync
-    if os.path.isdir(path):
-        save_folder = path
-    else:
-        save_folder = os.path.split(path)[0]
-
-    filename = metadata['filename']
-    identifier = 'partial_annotations' if is_partial else 'annotations'
-    save_path = os.path.join(save_folder, f'{filename}_{identifier}.h5')
+    save_path = metadata['filename']
+    identifier = '_partial_annotations.h5' if is_partial else '_annotations.h5'
+    save_path = save_path.replace('.h5', identifier)
 
     with h5py.File(save_path, 'a') as f:
         write_image(f, 'cell_segmentation', seg)
