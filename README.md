@@ -50,7 +50,7 @@ The white dots in the middle of each cell show the label assigned to it. In the 
 
 To understand whether a cell is infected you will need to look at the channel showing the virus marker. We saved it as a separate overlay, here is what you should see if you make it visible and turn off the rest:
 
-<img src="./img/virus.png" alt="Virus channel", style="width: 70vw; min-width: 330px;"> 
+ <img src="./img/virus.png" alt="Virus channel" style="width: 70vw; min-width: 330px;"> 
 
 Zoom in closer by scrolling and start inspecting indvidual cells. Turn off the segmentation overlay and turn on the cell outlines to see what's happening inside cells. Here is what it looks like:
 
