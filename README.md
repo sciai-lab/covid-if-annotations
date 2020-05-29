@@ -17,10 +17,13 @@ You can find a [short video demonstrating the tools functionality here.](https:/
 ### Download and install the software
 
 You can download the software here:
+
 - [Windows](https://files.ilastik.org/covid-if-annotations-setup-latest.exe).
 - [Mac](https://files.ilastik.org/covid-if-annotations_0.0.2dev5.app.tar.bz2)
 
-TODO add installation instructions
+Installation:
+
+- MacOS: download the file, double-click to extract the .app file from the archive. Right-click the .app file and select "Open" from the menu. It will ask if you are sure, since you have downloaded this file from here and not from the app store. Press the "Open" button and the tool main window should appear.
 
 ### Download an image to annotate
 
