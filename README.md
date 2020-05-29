@@ -124,8 +124,7 @@ Example data is [available here](https://oc.embl.de/index.php/s/IghxebboVxgpraU)
 ## Keybindings:
 - `u` update point and edge layer from the segmentation corrections and semantic annotations.
 - `h` toggle visibility of already annotated segments.
-- `.` cycle through the annotations for a selected point
-- `t` toggle annotation cycling by mouse click (not working yet!)
+- `n` get next label
 - `Shift + s` save the current annotations (segmentation + infected-vs-control labels)
 
 
