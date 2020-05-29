@@ -72,6 +72,7 @@ def modify_points_layer(viewer):
     # disable the add point button in the infected-vs-control layer
     points_controls = control_widgets[viewer.layers['infected-vs-control']]
     points_controls.addition_button.setEnabled(False)
+    points_controls.select_button.setEnabled(False)
 
 
 #
@@ -166,7 +167,6 @@ def toggle_hide_annotated_segments(viewer):
 # keybindings for toggling the labels of the point layer
 #
 
-@Points.bind_key('.')
 def next_label(layer, event=None):
     """Keybinding to advance to the next label value in
     the labels list (defined near the top) with wraparound
@@ -175,7 +175,11 @@ def next_label(layer, event=None):
     values for the currently selected points and also will be the values used for
     the next points that are added.
     """
+    if layer._value is None:
+        return
+
     labels = layer.metadata['labels']
+    layer.selected_data = [layer._value]
 
     # get the current properties and cell type value
     current_properties = layer.current_properties
@@ -192,22 +196,5 @@ def next_label(layer, event=None):
 
 
 def next_on_click(layer, event):
-    """Mouse click binding to advance the label of the selected point"""
-
-    # only do stuff in selection mode
-    if not layer.mode == 'select':
-        return
-
-    # only do stuff if we have next on click in the mouse bindings
-    if next_on_click not in layer.mouse_drag_callbacks:
-        return
-
-    # make sure that next on click is always the last callback in the mouse bindings
-    # otherwise we have unintended consequences when selecting a new node
-    if next_on_click in layer.mouse_drag_callbacks and next_on_click != layer.mouse_drag_callbacks[-1]:
-        layer.mouse_drag_callbacks.remove(next_on_click)
-        layer.mouse_drag_callbacks.append(next_on_click)
-        return
-
-    if len(layer.selected_data) > 0:
-        next_label(layer)
+    """Mouse click binding to advance the label of the point under cursor"""
+    next_label(layer)
