@@ -105,6 +105,9 @@ def _save_labels(viewer, is_partial=False):
     # FIXME this should be calloed on initialization, but don't know how to do it via the events
     modify_points_layer(viewer)
 
+    # we need to update before saving, otherwise segmentation
+    update_layers(viewer)
+
     to_save = [
         (viewer.layers['cell-segmentation'], {}, 'labels')
     ]
