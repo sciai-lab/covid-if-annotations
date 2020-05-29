@@ -21,6 +21,9 @@ def replace_layer(new_layer, layers, name_to_replace, protected_metadata=None):
             layer.data = new_layer.data
             layer.metadata = new_metadata
 
+            if isinstance(layer, Points):
+                layer.properties = new_layer.properties
+
     layers.remove(new_layer.name)
 
 
