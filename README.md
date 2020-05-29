@@ -104,9 +104,8 @@ Set up a conda environment with all dependencies and activate it:
 conda create -c conda-forge -n test-annotations napari scikit-image h5py pandas
 conda activate test-annotations
 ```
-Then install magicgui and this tool using pip:
+Then install this tool using pip:
 ```
-pip install magicgui
 pip install -e .
 ```
 
