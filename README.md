@@ -12,6 +12,10 @@ It allows you to manually annotate 2D images of cells, starting from an exisitng
 
 You can find a [short video demonstrating the tools functionality here.](https://www.youtube.com/watch?v=IwpRrX_PDFo&feature=youtu.be).
 
+### Contact us
+
+If you have feedback or run into issues join the "COVID-IF-annotations" channel on [https://chat.embl.org](https://annotate.embl.de/) or contact us directly.
+
 ## Step-by-step guide
 
 ### Download and install the software
@@ -29,7 +33,7 @@ Installation:
 ### Download an image to annotate
 
 To obtain an image for annotation
-- Visit https://annotate.embl.de/ (only available from within the EMBL network, use VPN if you are not on campus)
+- Visit [https://annotate.embl.de/](https://annotate.embl.de/) (only available from within the EMBL network, use VPN if you are not on campus)
 - `Register` and `Login`
 - Go to `Download` and press `Download Image` to get a new image
 
@@ -98,15 +102,13 @@ In order to continue labeling, you can reload the saved annotations:
 
 ### Upload your results
 
-- Go to https://annotate.embl.de/
+- Go to [https://annotate.embl.de/](https://annotate.embl.de/)
 - Log in with your account
 - Go to `Upload`
 - Click `Browse...` and select your annotation result.
 - Press `Upload Images`
 
-### Contact us
 
-If you have feedback or run into issues join the "COVID-IF-annotations" channel on https://chat.embl.org or contact us directly.
 
 
 ## For Developers
