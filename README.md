@@ -14,7 +14,7 @@ You can find a [short video demonstrating the tools functionality here.](https:/
 
 ### Contact us
 
-If you have feedback or run into issues join the "COVID-IF-annotations" channel on [https://chat.embl.org](https://annotate.embl.de/) or contact us directly.
+If you have feedback or run into issues join the "COVID-IF-annotations" channel on [https://chat.embl.org](https://chat.embl.org/) or contact us directly.
 
 ## Step-by-step guide
 
