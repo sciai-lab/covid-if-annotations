@@ -23,7 +23,7 @@ If you have feedback or run into issues join the "COVID-IF-annotations" channel 
 You can download the software here:
 
 - [Windows](https://files.ilastik.org/covid-if-annotations-setup-latest.exe).
-- [Mac](https://files.ilastik.org/covid-if-annotations_0.0.2dev5.app.tar.bz2)
+- [Mac](https://files.ilastik.org/covid-if-annotations_0.0.2dev7.app.tar.bz2)
 
 Installation:
 
