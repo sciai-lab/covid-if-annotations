@@ -12,7 +12,7 @@ def connect_to_viewer(viewer):
     """ Add all gui elements to the viewer
     """
 
-    save_gui_btn = QPushButton("save annotations [shfit + s]")
+    save_gui_btn = QPushButton("save annotations [shift + s]")
     save_gui_btn.clicked.connect(lambda: _save_labels(viewer))
 
     update_gui_btn = QPushButton("update layers [u]")
