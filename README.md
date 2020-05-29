@@ -67,7 +67,7 @@ Now the pipette is for the color picker, the drop for filling and the pen for dr
 5. Now what if you want to paint a new cell that we missed? Press "n" on your keyboard to activate a new, unused label. Then paint your  new cell. Done!
 
 Keep going until you have all the cells labeled and all segmentation errors fixed.
-**Don't forget to save your results frequently by pressing "shfit + s"!**
+**Don't forget to save your results frequently by pressing "shift + s"!**
 The results will be saved to a file called `"IMAGE_NAME_annotations.h5" in the same folder where you store the image.`
 
 In order to see your progress and find the cells you still need to label, you can press "h" to hide the boundaries in "cell-outlines" for the cells which you have annotated already.
@@ -124,8 +124,7 @@ Example data is [available here](https://oc.embl.de/index.php/s/IghxebboVxgpraU)
 ## Keybindings:
 - `u` update point and edge layer from the segmentation corrections and semantic annotations.
 - `h` toggle visibility of already annotated segments.
-- `.` cycle through the annotations for a selected point
-- `t` toggle annotation cycling by mouse click (not working yet!)
+- `n` get next label
 - `Shift + s` save the current annotations (segmentation + infected-vs-control labels)
 
 
