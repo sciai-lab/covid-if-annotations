@@ -2,56 +2,9 @@ import os
 
 import numpy as np
 from napari import Viewer
-from napari.layers.points import Points
-from napari.layers.labels import Labels
 
 from .image_utils import get_edge_segmentation, get_centroids, map_labels_to_edges
 from .layers import get_centroid_properties, save_labels
-
-
-def replace_layer(new_layer, layers, name_to_replace, protected_metadata=None):
-    for layer in layers:
-        if layer.name == name_to_replace:
-            if protected_metadata is None:
-                new_metadata = new_layer.metadata
-            else:
-                new_metadata = layer.metadata
-                new_metadata.update({k: v for k, v in new_layer.metadata.items()
-                                     if k not in protected_metadata})
-            layer.data = new_layer.data
-            layer.metadata = new_metadata
-
-            if isinstance(layer, Points):
-                layer.properties = new_layer.properties
-
-    layers.remove(new_layer.name)
-
-
-# the event object will have the following useful things:
-# event.source -> the full viewer.layers object itself
-# event.item -> the specific layer that cause the change
-# event.type -> a string like 'added', 'removed'
-def on_layer_change(event):
-    try:
-        # if we add new labels or new points, we need to replace instead
-        # of adding them
-        if isinstance(event.item, Labels) and event.type == 'added':
-            layers = event.source
-            layer = event.item
-            if len([ll for ll in layers if isinstance(ll, Labels)]) > 1:
-                replace_layer(layer, layers, 'cell-segmentation', protected_metadata=['filename'])
-
-        if isinstance(event.item, Points) and event.type == 'added':
-            layers = event.source
-            layer = event.item
-            if len([ll for ll in layers if isinstance(ll, Points)]) > 1:
-                replace_layer(event.item, layers, 'infected-vs-control')
-
-        # add the 'change label on click' functionality to the points layer
-        if isinstance(event.item, Points) and event.type == 'added':
-            event.item.mouse_drag_callbacks.append(next_on_click)
-    except AttributeError:
-        pass
 
 
 def update_infected_labels_from_segmentation(seg_ids, prev_seg_ids, infected_labels):
@@ -91,9 +44,6 @@ def modify_points_layer(viewer):
 
 @Viewer.bind_key('n')
 def paint_new_label(viewer):
-    # FIXME this should be calloed on initialization, but don't know how to do it via the events
-    modify_points_layer(viewer)
-
     layer = viewer.layers['cell-segmentation']
     viewer.layers.unselect_all()
     layer.selected = True
@@ -105,9 +55,6 @@ def paint_new_label(viewer):
 
 @Viewer.bind_key('Shift-S')
 def _save_labels(viewer, is_partial=False):
-    # FIXME this should be calloed on initialization, but don't know how to do it via the events
-    modify_points_layer(viewer)
-
     # we need to update before saving, otherwise segmentation
     update_layers(viewer)
 
@@ -119,9 +66,6 @@ def _save_labels(viewer, is_partial=False):
 
 @Viewer.bind_key('u')
 def update_layers(viewer):
-    # FIXME this should be calloed on initialization, but don't know how to do it via the events
-    modify_points_layer(viewer)
-
     # get the segmentation as well as the previous seg ids and infected labels
     # from the segmentation layer
     seg_layer = viewer.layers['cell-segmentation']
@@ -166,9 +110,6 @@ def update_layers(viewer):
 
 @Viewer.bind_key('h')
 def toggle_hide_annotated_segments(viewer):
-    # FIXME this should be calloed on initialization, but don't know how for io hook
-    modify_points_layer(viewer)
-
     seg_layer = viewer.layers['cell-segmentation']
     metadata = seg_layer.metadata
     metadata['hide_annotated_segments'] = not metadata['hide_annotated_segments']
