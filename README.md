@@ -111,8 +111,6 @@ In order to continue labeling, you can reload the saved annotations:
 - Press `Upload Images`
 
 
-
-
 ## For Developers
 
 ### Install from source
@@ -138,7 +136,10 @@ Or you can start the tool with data already via:
 python launch.py --path /path/to/data.h5
 ```
 
-Example data is [available here](https://oc.embl.de/index.php/s/IghxebboVxgpraU).
+If you don't have access to the EMBL intranet, we provide to different example images:
+- [example data with initial infected labels](https://oc.embl.de/index.php/s/IghxebboVxgpraU)
+- [example data without initial infected labels](https://oc.embl.de/index.php/s/OhrWtVXZ7GwbKoc)
+
 
 ## Keybindings:
 - `u` update point and edge layer from the segmentation corrections and semantic annotations.
