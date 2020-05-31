@@ -2,6 +2,8 @@ import os
 
 import numpy as np
 from napari import Viewer
+from napari._vispy.vispy_points_layer import VispyPointsLayer
+VispyPointsLayer._highlight_width = 0
 
 from .image_utils import get_edge_segmentation, get_centroids, map_labels_to_edges
 from .layers import get_centroid_properties, save_labels
@@ -102,20 +104,14 @@ def update_layers(viewer):
 
     # hide the points of annotated cells if we are in hidden mode
     if hide_annotated_segments:
-        # NOTE that we need to subtract 1 to get the point indices, because they don't include the background segment
-        hidden_points = hidden_segments - 1
-        viewer.layers['infected-vs-control'].edge_color[hidden_points, -1] = 0
-        viewer.layers['infected-vs-control'].face_color[hidden_points, -1] = 0
+        viewer.layers['infected-vs-control'].edge_color_cycle[1:, -1] = 0.2
+        viewer.layers['infected-vs-control'].face_color_cycle[1:, -1] = 0.2
     else:
         # make sure all alpha values are set to 1, in order to properly toggle visibility
-        viewer.layers['infected-vs-control'].edge_color[:, -1] = 1
-        viewer.layers['infected-vs-control'].face_color[:, -1] = 1
-
-    # need to call refresh colors here, otherwise new centroids don't get the correct color
-    # only do this if the layer is visible
-    if viewer.layers['infected-vs-control'].visible:
-        viewer.layers['infected-vs-control'].refresh_colors()
-
+        viewer.layers['infected-vs-control'].edge_color_cycle[1:, -1] = 1
+        viewer.layers['infected-vs-control'].face_color_cycle[1:, -1] = 1
+    viewer.layers['infected-vs-control'].refresh_colors()
+    
     edge_width = viewer.layers['cell-outlines'].metadata['edge_width']
     edges = get_edge_segmentation(seg, edge_width)
     infected_edges = map_labels_to_edges(edges, seg_ids, infected_labels, hidden_segments, remap_background=4)
@@ -129,7 +125,7 @@ def toggle_hide_annotated_segments(viewer):
     metadata['hide_annotated_segments'] = not metadata['hide_annotated_segments']
     viewer.layers['cell-segmentation'].metadata = metadata
     update_layers(viewer)
-
+    viewer._hide_gui_btn.setChecked(metadata['hide_annotated_segments'])
 
 #
 # keybindings for toggling the labels of the point layer
@@ -162,6 +158,10 @@ def next_label(layer, event=None):
     current_properties['cell_type'] = np.array([new_label])
     layer.current_properties = current_properties
 
+    layer.refresh_colors()
+    layer.face_color[layer._value, -1] = 1
+    layer.edge_color[layer._value, -1] = 1
+    layer.refresh()
 
 def next_on_click(layer, event):
     """Mouse click binding to advance the label of the point under cursor"""
