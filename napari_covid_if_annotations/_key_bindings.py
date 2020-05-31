@@ -99,6 +99,18 @@ def update_layers(viewer):
 
     viewer.layers['infected-vs-control'].data = centroids
     viewer.layers['infected-vs-control'].properties = properties
+
+    # hide the points of annotated cells if we are in hidden mode
+    if hide_annotated_segments:
+        # NOTE that we need to subtract 1 to get the point indices, because they don't include the background segment
+        hidden_points = hidden_segments - 1
+        viewer.layers['infected-vs-control'].edge_color[hidden_points, -1] = 0
+        viewer.layers['infected-vs-control'].face_color[hidden_points, -1] = 0
+    else:
+        # make sure all alpha values are set to 1, in order to properly toggle visibility
+        viewer.layers['infected-vs-control'].edge_color[:, -1] = 1
+        viewer.layers['infected-vs-control'].face_color[:, -1] = 1
+
     # need to call refresh colors here, otherwise new centroids don't get the correct color
     # only do this if the layer is visible
     if viewer.layers['infected-vs-control'].visible:
