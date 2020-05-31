@@ -100,7 +100,9 @@ def update_layers(viewer):
     viewer.layers['infected-vs-control'].data = centroids
     viewer.layers['infected-vs-control'].properties = properties
     # need to call refresh colors here, otherwise new centroids don't get the correct color
-    viewer.layers['infected-vs-control'].refresh_colors()
+    # only do this if the layer is visible
+    if viewer.layers['infected-vs-control'].visible:
+        viewer.layers['infected-vs-control'].refresh_colors()
 
     edge_width = viewer.layers['cell-outlines'].metadata['edge_width']
     edges = get_edge_segmentation(seg, edge_width)
