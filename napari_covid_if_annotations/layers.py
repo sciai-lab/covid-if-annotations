@@ -26,6 +26,7 @@ def get_centroid_kwargs(centroids, infected_labels):
     label_names = ['unlabeled', 'infected', 'control', 'uncertain']
     labels = [0, 1, 2, 3]
     face_color_cycle = ['white', 'red', 'cyan', 'yellow']
+    edge_color_cycle = ['black', 'black', 'black', 'black']
 
     properties = get_centroid_properties(centroids, infected_labels)
     centroid_kwargs = {
@@ -33,8 +34,8 @@ def get_centroid_kwargs(centroids, infected_labels):
         'properties': properties,
         'size': 15,
         'edge_width': 5,
-        'edge_color': 'black',
-        'edge_colormap': 'gray',
+        'edge_color': 'cell_type',
+        'edge_color_cycle': edge_color_cycle,
         'face_color': 'cell_type',
         'face_color_cycle': face_color_cycle,
         'metadata': {'labels': labels,

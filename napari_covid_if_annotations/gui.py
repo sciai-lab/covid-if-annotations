@@ -1,5 +1,5 @@
 import os
-from qtpy.QtWidgets import QLabel, QPushButton
+from qtpy.QtWidgets import QLabel, QPushButton, QCheckBox
 from ._key_bindings import (
     update_layers,
     toggle_hide_annotated_segments,
@@ -18,8 +18,13 @@ def connect_to_viewer(viewer):
     update_gui_btn = QPushButton("update layers [u]")
     update_gui_btn.clicked.connect(lambda: update_layers(viewer))
 
-    hide_gui_btn = QPushButton("hide annotated cells [h]")
-    hide_gui_btn.clicked.connect(lambda: toggle_hide_annotated_segments(viewer))
+    def hide_toggle(hide_gui_btn, viewer):
+        hide = viewer.layers['cell-segmentation'].metadata['hide_annotated_segments']
+        if hide_gui_btn.isChecked() != hide:
+            toggle_hide_annotated_segments(viewer)
+    hide_gui_btn = QCheckBox("hide annotated cells [h]")
+    hide_gui_btn.toggled.connect(lambda: hide_toggle(hide_gui_btn, viewer))
+    viewer._hide_gui_btn = hide_gui_btn
 
     paint_gui_btn = QPushButton("get next label [n]")
     paint_gui_btn.clicked.connect(lambda: paint_new_label(viewer))
