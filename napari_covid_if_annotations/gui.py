@@ -22,7 +22,7 @@ def connect_to_viewer(viewer):
         hide = viewer.layers['cell-segmentation'].metadata['hide_annotated_segments']
         if hide_gui_btn.isChecked() != hide:
             toggle_hide_annotated_segments(viewer)
-    hide_gui_btn = QCheckBox("hide annotated cells")
+    hide_gui_btn = QCheckBox("hide annotated cells [h]")
     hide_gui_btn.toggled.connect(lambda: hide_toggle(hide_gui_btn, viewer))
     viewer._hide_gui_btn = hide_gui_btn
 
