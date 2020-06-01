@@ -67,18 +67,21 @@ def launch_covid_if_annotation_tool(path=None, saturation_factor=1, edge_width=2
                     if len([ll for ll in layers if isinstance(ll, Points)]) > 1:
                         replace_layer(event.item, layers, 'infected-vs-control')
 
-                    # modifty the new points layer
-                    viewer.layers['infected-vs-control'].refresh_colors()
-                    modify_points_layer(viewer)
-
                     # select the new points layer
                     layer = viewer.layers['infected-vs-control']
                     viewer.layers.unselect_all()
                     layer.selected = True
 
-                # add the 'change label on click' functionality to the points layer
-                if isinstance(event.item, Points) and event.type == 'added':
+                    # modifty the new points layer
+                    viewer.layers['infected-vs-control'].refresh_colors()
+
+                    # add the 'change label on click' functionality to the points layer
                     event.item.mouse_drag_callbacks.append(next_on_click)
+
+                # always modify the points layer to deactivate the buttons we don't need
+                if isinstance(event.item, Points):
+                    modify_points_layer(viewer)
+
             except AttributeError:
                 pass
 

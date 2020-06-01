@@ -31,13 +31,13 @@ def update_infected_labels_from_points(point_labels, infected_labels):
     return np.array([0] + point_labels.tolist())
 
 
-# TODO we should also disable removing all the layers!
 def modify_points_layer(viewer):
     control_widgets = viewer.window.qt_viewer.controls.widgets
     # disable the add point button in the infected-vs-control layer
     points_controls = control_widgets[viewer.layers['infected-vs-control']]
     points_controls.addition_button.setEnabled(False)
     points_controls.select_button.setEnabled(False)
+    points_controls.delete_button.setEnabled(False)
 
 
 #
@@ -110,8 +110,10 @@ def update_layers(viewer):
         # make sure all alpha values are set to 1, in order to properly toggle visibility
         viewer.layers['infected-vs-control'].edge_color_cycle[1:, -1] = 1
         viewer.layers['infected-vs-control'].face_color_cycle[1:, -1] = 1
-    viewer.layers['infected-vs-control'].refresh_colors()
-    
+
+    if viewer.layers['infected-vs-control'].visible:
+        viewer.layers['infected-vs-control'].refresh_colors()
+
     edge_width = viewer.layers['cell-outlines'].metadata['edge_width']
     edges = get_edge_segmentation(seg, edge_width)
     infected_edges = map_labels_to_edges(edges, seg_ids, infected_labels, hidden_segments, remap_background=4)
@@ -126,6 +128,7 @@ def toggle_hide_annotated_segments(viewer):
     viewer.layers['cell-segmentation'].metadata = metadata
     update_layers(viewer)
     viewer._hide_gui_btn.setChecked(metadata['hide_annotated_segments'])
+
 
 #
 # keybindings for toggling the labels of the point layer
@@ -162,6 +165,7 @@ def next_label(layer, event=None):
     layer.face_color[layer._value, -1] = 1
     layer.edge_color[layer._value, -1] = 1
     layer.refresh()
+
 
 def next_on_click(layer, event):
     """Mouse click binding to advance the label of the point under cursor"""
