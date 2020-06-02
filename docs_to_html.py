@@ -12,7 +12,12 @@ def findnth(haystack, needle, n):
 def docs_to_html(output_file):
     rdme = './README.md'
 
-    html_out = []
+    # initialize with the start of the static block
+    html_out = [
+        "{% extends \"images/base.html\" %}",
+        "{% load static %}",
+        "{% block content %}"
+    ]
     with open(rdme) as f:
         for line in f:
 
