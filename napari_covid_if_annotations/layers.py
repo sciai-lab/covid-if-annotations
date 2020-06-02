@@ -59,7 +59,7 @@ def load_labels(f):
     return layers
 
 
-def save_labels(path, layers, is_partial=False):
+def save_labels(layers):
     layer = None
     for this_layer, kwargs, layer_type in layers:
         if layer_type == 'labels':
@@ -73,10 +73,6 @@ def save_labels(path, layers, is_partial=False):
     infected_labels = metadata['infected_labels']
     assert len(seg_ids) == len(infected_labels)
     assert infected_labels[0] == 0
-    # TODO set to if partial if not all cells have been annotated
-    # if any(infected_labels[1:] == 0):
-    #    is_partial = True
-    # TODO warn if we only have partial annotations
 
     infected_labels_columns = ['label_id', 'infected_label']
     infected_labels_table = np.concatenate([seg_ids[:, None], infected_labels[:, None]], axis=1)
@@ -84,8 +80,9 @@ def save_labels(path, layers, is_partial=False):
     # we modify the save path, because we don't want to let the filenaming
     # patterns go out of sync
     save_path = metadata['filename']
-    identifier = '_partial_annotations.h5' if is_partial else '_annotations.h5'
-    save_path = save_path.replace('.h5', identifier)
+    identifier = '_annotations.h5'
+    if identifier not in save_path:
+        save_path = save_path.replace('.h5', identifier)
 
     with h5py.File(save_path, 'a') as f:
         write_image(f, 'cell_segmentation', seg)

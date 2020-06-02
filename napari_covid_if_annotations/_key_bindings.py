@@ -39,6 +39,10 @@ def modify_points_layer(viewer):
     points_controls.select_button.setEnabled(False)
     points_controls.delete_button.setEnabled(False)
 
+    # add the 'change label on click' functionality to the points layer
+    if next_on_click not in viewer.layers['infected-vs-control'].mouse_drag_callbacks:
+        viewer.layers['infected-vs-control'].mouse_drag_callbacks.append(next_on_click)
+
 
 #
 # keybindings for the viewer
@@ -56,14 +60,13 @@ def paint_new_label(viewer):
 
 
 @Viewer.bind_key('Shift-S')
-def _save_labels(viewer, is_partial=False):
+def _save_labels(viewer):
     # we need to update before saving, otherwise segmentation
     update_layers(viewer)
-
     to_save = [
         (viewer.layers['cell-segmentation'], {}, 'labels')
     ]
-    save_labels(os.getcwd(), to_save, is_partial)
+    save_labels(to_save)
 
 
 @Viewer.bind_key('u')
