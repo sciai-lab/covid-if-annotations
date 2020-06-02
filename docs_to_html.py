@@ -29,6 +29,9 @@ def docs_to_html(output_file):
             html_out.append(markdown(line))
 
     html_out = "\n".join(html_out)
+    # add end of the static block
+    html_out += "\n"
+    html_out += "{% endblock content %}\n"
 
     with open(output_file, 'w') as f:
         f.write(html_out)
