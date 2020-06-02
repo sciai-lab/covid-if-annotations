@@ -96,7 +96,7 @@ def get_raw_data(f, seg, saturation_factor):
 
     serum = normalize(read_image(f, 'serum_IgG'))
     marker = quantile_normalize(read_image(f, 'marker'))
-    nuclei = normalize(read_image(f, 'nuclei'))
+    nuclei = quantile_normalize(read_image(f, 'nuclei'))
     bg_mask = seg == 0
 
     def subtract_bg(im):

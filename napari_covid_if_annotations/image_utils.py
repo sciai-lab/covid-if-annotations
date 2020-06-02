@@ -12,6 +12,7 @@ def normalize(im):
 
 
 def quantile_normalize(im, low=.01, high=.99):
+    im = im.astype('float32')
     tlow, thigh = np.quantile(im, low), np.quantile(im, high)
     im -= tlow
     im /= thigh
