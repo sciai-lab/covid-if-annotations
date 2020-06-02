@@ -23,7 +23,7 @@ def docs_to_html(output_file):
                 first_quote, second_quote = findnth(line, "\"", 0), findnth(line, "\"", 1)
                 im_name = line[first_quote+1:second_quote]
                 im_name_html = im_name.replace('./', 'images/')
-                im_name_html = "{% static '" + im_name_html + "' }"
+                im_name_html = "{% static '" + im_name_html + "' %}"
                 line = line.replace(im_name, im_name_html)
 
             html_out.append(markdown(line))
