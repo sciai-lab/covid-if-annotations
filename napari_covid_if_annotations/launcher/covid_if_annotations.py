@@ -37,7 +37,7 @@ def replace_layer(new_layer, layers, name_to_replace, protected_metadata=None):
 
 
 # should be installed as a script in setup.py
-def launch_covid_if_annotation_tool(path=None, saturation_factor=1, edge_width=2):
+def launch_covid_if_annotation_tool(path=None, saturation_factor=1, edge_width=1):
     """ Launch the Covid IF anootation tool.
 
     Based on https://github.com/transformify-plugins/segmentify/blob/master/examples/launch.py
@@ -94,11 +94,15 @@ def launch_covid_if_annotation_tool(path=None, saturation_factor=1, edge_width=2
         connect_to_viewer(viewer)
 
 
-if __name__ == '__main__':
+def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--path', type=str, default=None)
     parser.add_argument('--saturation_factor', type=float, default=1)
-    parser.add_argument('--edge_width', type=int, default=2)
+    parser.add_argument('--edge_width', type=int, default=1)
 
     args = parser.parse_args()
     launch_covid_if_annotation_tool(args.path, args.saturation_factor, args.edge_width)
+
+
+if __name__ == '__main__':
+    main()

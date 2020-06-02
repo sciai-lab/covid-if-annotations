@@ -32,8 +32,8 @@ def get_centroid_kwargs(centroids, infected_labels):
     centroid_kwargs = {
         'name': 'infected-vs-control',
         'properties': properties,
-        'size': 15,
-        'edge_width': 5,
+        'size': 8,
+        'edge_width': 2,
         'edge_color': 'cell_type',
         'edge_color_cycle': edge_color_cycle,
         'face_color': 'cell_type',

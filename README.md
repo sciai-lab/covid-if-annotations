@@ -24,6 +24,7 @@ You can download the software here:
 
 - [Windows](https://files.ilastik.org/covid-if-annotations-setup-latest.exe).
 - [Mac](https://files.ilastik.org/covid-if-annotations-app-latest.tar.bz2)
+- For Linux, [install via conda](https://github.com/hci-unihd/covid-if-annotations#install-via-conda)
 
 Installation:
 
@@ -113,13 +114,35 @@ In order to continue labeling, you can reload the saved annotations:
 
 ## For Developers
 
+In order to install the tool, either from the conda package or from source, you will need conda or miniconda.
+If you don't have either installed yet, we recommend to install miniconda.
+[For this, please download the installer and follow the installation instructions.](https://docs.conda.io/en/latest/miniconda.html)
+
+### Install via conda
+
+Open a terminal and make sure your conda is activated.
+Then run the following commands:
+
+```
+conda create -c conda-forge -c ilastik -n covid-if-annotations covid-if-annotations
+conda activate covid-if-annotations
+```
+
+You can then run the plugin via the command
+```
+covid_if_annotations
+```
+
+TODO we need to build this conda-package
+
 ### Install from source
 
+In order to install the software, open a terminal, clone this repository
 Set up a conda environment with all dependencies and activate it:
 
 ```
-conda create -c conda-forge -n test-annotations napari scikit-image h5py pandas
-conda activate test-annotations
+conda create -c conda-forge -n covid-if-annotations napari scikit-image h5py pandas
+conda activate covid-if-annotations
 ```
 Then install this tool using pip:
 ```
@@ -128,12 +151,12 @@ pip install -e .
 
 After installing the plugin, you can run
 ```
-python launch.py
+covid_if_annotations
 ```
 to launch the annotation tool. Drag and drop data to annotate onto the viewer.
 Or you can start the tool with data already via:
 ```
-python launch.py --path /path/to/data.h5
+covid_if_annotations --path /path/to/data.h5
 ```
 
 If you don't have access to the EMBL intranet, we provide to different example images:
