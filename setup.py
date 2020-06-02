@@ -21,9 +21,6 @@ with open('requirements.txt') as f:
             requirements.append(stripped)
 
 
-# https://github.com/pypa/setuptools_scm
-use_scm = {"write_to": "napari_covid_if_annotations/_version.py"}
-
 setup(
     name='napari-covid-if-annotations',
     author='Constantin Pape',
@@ -36,8 +33,7 @@ setup(
     packages=find_packages(),
     python_requires='>=3.6',
     install_requires=requirements,
-    use_scm_version=use_scm,
-    setup_requires=['setuptools_scm'],
+    version="0.0.3dev1",
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',

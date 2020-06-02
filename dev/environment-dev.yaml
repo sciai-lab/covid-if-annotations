@@ -1,0 +1,11 @@
+name: covid-if-dev
+channels:
+  - defaults
+  - conda-forge
+  - ilastik-forge
+dependencies:
+  - anaconda-client
+  - bumpversion
+  - conda-build
+  - conda-verify
+  - yaml
