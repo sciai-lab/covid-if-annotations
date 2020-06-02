@@ -1,0 +1,13 @@
+{
+    "menu_name": "covid if annotations tool",
+    "menu_items":
+        [
+            {
+                "name": "covif-if",
+                "icon": "${MENU_DIR}/icon_256x256.ico",
+                "script": "${PYTHON_SCRIPTS}/covid-if-annotations.exe",
+                "desktop": false,
+                "quicklaunch": false
+            }
+        ]
+}
