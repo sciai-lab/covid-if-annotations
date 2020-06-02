@@ -6,6 +6,17 @@ Annotation Tool for immunofluorescence assay images
 
 ## Getting Started
 
+### Basis of the assay
+
+The images you will annotate come from an immunofluorescence assay for measurung the antibody response of human serum to COVID19.
+The raw images from the micropscope contain 3 different channels:
+- The serum channel, that contains the blood serum to be tested as well as cells from a cell line. Some of these cells are infected with COVID19, some are not infected. In the following, we will refer to the infected cells as "infected" and to the non-infected cells as "control". One of the main tasks is to label whether a given cell is "infected" or "control" (or "uncertain" if you cannot tell). In our tool, you can see this channel as green color in the layer "raw".
+- The virus marker channel, that shows where viral RNA is being expressed. In our tool, you can see this channel as red color in "raw" and we have also added a separate layer "virus-marker" that only shows this channel.
+- A DAPI channel that stains the cell nuclei, you can see it in the layer "raw" as blue.
+
+In order to automatically determine whether a sample shows a response or not, we apply machine learning to segment the individual cells and classify whether they are "inected" or "control".
+To this end, we need more ground-truth to obtain reliable results, hence this tool :).
+
 ### The  aim of this software
 
 It allows you to manually annotate 2D images of cells, starting from an exisitng and partially wrong cell segmentation. Two kinds of annotations are supported: 1) correcting the provided segmentation and 2) assigning one of the predefined labels to segmented cells. **We would greatly appreciate labels of both kinds!**
@@ -67,9 +78,29 @@ That's it, you can now click on the white circles to give them labels! If you cl
 
 <img src="./img/first_labels.png" alt="First labels" style="width: 70vw; min-width: 330px;"> 
 
-You should label cells as control that show actual signal in the virus marker channel. Note that this channel is noisy,
-so if you can't tell if the signal you see is real or noise, mark the cell as uncertain.
-TODO maybe Severina or Vibor should expand on this
+#### How to tell "infected" vs "control" vs "uncertain"
+
+Cells should be labeled as "infected", if they show signal in the "virus-marker". If they don't show any signal, they should be labeled as "control".
+Note that it is sometimes not easy to tell exactly which category to put a cell in, because the channel is noisy, or signal might be spilling over from an adjacent cell.
+If you are unsure, label the cell as "uncertain".
+
+See for example this group of cells that are infected and labeled such, shown in the raw and in the virus marker:
+<img src="./img/labeling-infected-rgb.png" alt="Infected RGB" style="width: 70vw; min-width: 330px;"> 
+<img src="./img/labeling-infected-virus.png" alt="Infected Virus" style="width: 70vw; min-width: 330px;"> 
+
+The central cells in this image are all not infected and labeled as "control", again shown in the raw and in the virus marker:
+<img src="./img/labeling-control-rgb.png" alt="Infected RGB" style="width: 70vw; min-width: 330px;"> 
+<img src="./img/labeling-control-virus.png" alt="Infected Virus" style="width: 70vw; min-width: 330px;"> 
+
+In this example, two cells were labeled as "uncertain", because the signal in the virus marker channel might be spilling over
+from an infected cell.
+<img src="./img/labeling-uncertain1-rgb.png" alt="Infected RGB" style="width: 70vw; min-width: 330px;"> 
+<img src="./img/labeling-uncertain1-virus.png" alt="Infected Virus" style="width: 70vw; min-width: 330px;"> 
+
+In this example, a cell was labeled as "uncertain", because it shows only very weak signal in the virus marker channel, that might be noise.
+<img src="./img/labeling-uncertain2-rgb.png" alt="Infected RGB" style="width: 70vw; min-width: 330px;"> 
+<img src="./img/labeling-uncertain2-virus.png" alt="Infected Virus" style="width: 70vw; min-width: 330px;"> 
+
 
 ### Correct cell segmentations
 The segmentations you see here were produced by our current pipeline. They are automatic and thus not perfect. Here is what you do if you notice a segmentation error:
