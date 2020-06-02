@@ -18,8 +18,6 @@ requirements:
   build:
     - python >=3.6
     - pip
-    # can be removed if bumpversion PR is merged
-    - setuptools_scm
   run:
     - python
     # dependencies are defined in setup.py
