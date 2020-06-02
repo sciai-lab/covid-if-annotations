@@ -45,7 +45,7 @@ Drag-and-drop the .h5 file you downloaded into the tool or use the File->Open me
  <img src="./img/file_opened.png" alt="Start-up window" style="width: 70vw; min-width: 330px;"> 
 
 The multi-colored overlay shows the preliminary cell segmentation we have obtained with our current pipeline. In the lower half of the left part of the window you see a list of displayed overlays, which you can turn on and off by clicking on the eye icon or configure using the controls in the upper left. 
-The white dots in the middle of each cell show the label assigned to it. In the beginning, all cells are white, i.e. Unlabeled. If you start from an existing project, you will also see red("infected"), cyan("control") and yellow("uncertain") labels.
+The white dots in the middle of each cell show the label assigned to it. In the beginning, all cells are white, i.e. Unlabeled. If you start from an existing project, you will also see red("infected"), cyan("non-infected") and yellow("uncertain") labels.
 
 ### Label cells
 
@@ -57,9 +57,9 @@ Zoom in closer by scrolling and start inspecting indvidual cells. Turn off the s
 
 <img src="./img/outlines.png" alt="Cell Outlines" style="width: 70vw; min-width: 330px;"> 
 
-The red  channel in the raw data corresponds to the virus-marker overlay, but we chose to also show it separately because it's so important for the infected/control decisions. 
+The red  channel in the raw data corresponds to the virus-marker overlay, but we chose to also show it separately because it's so important for the infected/non-infected decisions. 
 
-Now, **get ready for labeling**: make the infected-vs-control overlay visible and active (click on the eye and also somewhere else on the rectangle with the "infected-vs-control" words. You should now see this layer high-lighted. Go to the topmost 4 buttons and activate the "mouse" one as shown here:
+Now, **get ready for labeling**: make the infected-vs-non-infected overlay visible and active (click on the eye and also somewhere else on the rectangle with the "infected-vs-non-infected" words. You should now see this layer high-lighted. Go to the topmost 4 buttons and activate the "mouse" one as shown here:
 
 <img src="./img/mouse_active.png" alt="Mouse" style="width: 70vw; min-width: 330px;"> 
 
@@ -67,9 +67,8 @@ That's it, you can now click on the white circles to give them labels! If you cl
 
 <img src="./img/first_labels.png" alt="First labels" style="width: 70vw; min-width: 330px;"> 
 
-You should label cells as control that show actual signal in the virus marker channel. Note that this channel is noisy,
+You should label cells as infected that show actual signal in the virus marker channel. Note that this channel is noisy,
 so if you can't tell if the signal you see is real or noise, mark the cell as uncertain.
-TODO maybe Severina or Vibor should expand on this
 
 ### Correct cell segmentations
 The segmentations you see here were produced by our current pipeline. They are automatic and thus not perfect. Here is what you do if you notice a segmentation error:
@@ -85,7 +84,7 @@ Now the pipette is for the color picker, the drop for filling and the pen for dr
 3. select the pen tool and paint on top of other cells to re-assign their pixels to the cell whose color you picked. I painted and my cell got better (what do I know, I'm not a cell biologist. At least it's now different).
 
 <img src="./img/segmentation_3.png" alt="Segmentation" style="width: 70vw; min-width: 330px;"> 
-4. To see the changes you have made to the segmentation in the "infected-vs-control" and "cell-outlines", press "u".
+4. To see the changes you have made to the segmentation in the "infected-vs-non-infected" and "cell-outlines", press "u".
 5. Now what if you want to paint a new cell that we missed? Press "n" on your keyboard to activate a new, unused label. Then paint your  new cell. Done!
 
 Keep going until you have all the cells labeled and all segmentation errors fixed.
@@ -168,7 +167,7 @@ If you don't have access to the EMBL intranet, we provide to different example i
 - `u` update point and edge layer from the segmentation corrections and semantic annotations.
 - `h` toggle visibility of already annotated segments.
 - `n` get next label
-- `Shift + s` save the current annotations (segmentation + infected-vs-control labels)
+- `Shift + s` save the current annotations (segmentation + infected-vs-non-infected labels)
 
 
 ## Acknowledgements
