@@ -39,8 +39,17 @@ You can download the software here:
 
 Installation:
 
-- MacOS: download the file, double-click to extract the .app file from the archive. Right-click the .app file and select "Open" from the menu. It will ask if you are sure, since you have downloaded this file from here and not from the app store. Press the "Open" button and the tool main window should appear.
-- Windows: TBA
+- **MacOS**: download the file, double-click to extract the .app file from the archive. Right-click the .app file and select "Open" from the menu. It will ask if you are sure, since you have downloaded this file from here and not from the app store. Press the "Open" button and the tool main window should appear.
+- **Windows**: download the `.exe` file and double click it to start the installation process.
+  First, you'll have to accept the license agreement.
+  In the next step, you can choose whether to install the covid-if-annotations tool for every user on your computer or just for you.
+  In most cases, "Just me" should be the best option.
+  After setting the installation path you can see the advanced options.
+  Please make sure that both checkboxes are _not_ checked (see image below).
+  Proceed from there by clicking on _install_.
+  Once the installation process is done, you can run the covid-if-annotations tool by finding it in the start menu and clicking on it.
+
+ <img src="./img/installation-win.png" alt="Advanced options during windows installation." style="width: 70vw; min-width: 330px;">
 
 ### Download an image to annotate
 
