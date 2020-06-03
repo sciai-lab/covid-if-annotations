@@ -4,7 +4,7 @@ import skimage.color as skc
 from vispy.color import Colormap
 
 from .image_utils import (get_centroids, get_edge_segmentation, map_labels_to_edges,
-                          normalize, quantile_normalize)
+                          quantile_normalize)
 from .io_utils import has_table, read_image, read_table, write_image, write_table
 
 
@@ -46,7 +46,8 @@ def get_centroid_kwargs(centroids, infected_labels):
 
 def load_labels(f):
     seg = read_image(f, 'cell_segmentation')
-    seg_ids, centroids, _, infected_labels = get_segmentation_data(f, seg, edge_width=1)
+    seg_ids, centroids, _, infected_labels = get_segmentation_data(f, seg, edge_width=1,
+                                                                   low=0.005, high=0.995)
 
     seg_kwargs = get_seg_kwargs(f, seg_ids, infected_labels)
 
@@ -94,7 +95,7 @@ def save_labels(layers):
 
 def get_raw_data(f, seg, saturation_factor):
 
-    serum = normalize(read_image(f, 'serum_IgG'))
+    serum = quantile_normalize(read_image(f, 'serum_IgG'))
     marker = quantile_normalize(read_image(f, 'marker'))
     nuclei = quantile_normalize(read_image(f, 'nuclei'))
     bg_mask = seg == 0
