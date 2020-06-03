@@ -151,6 +151,12 @@ In order to continue labeling, you can reload the saved annotations:
 - Click `Browse...` and select your annotation result.
 - Press `Upload Images`
 
+## Acknowledgements
+
+This tool was built with a lot of help from the napari team, especially from Nicholas Sofroniew, Talley Lambert and Kevin Yamauchi.
+Josep Manel Moscardo from EMBL IT has built the EMBL annotation service and Dominik Kutra from the Kreshuk group has set up the infrastructure
+to build the software for Mac and Windows.
+
 
 ## For Developers
 
@@ -210,23 +216,6 @@ If you don't have access to the EMBL intranet, we provide to different example i
 - `n` get next label
 - `Shift + s` save the current annotations (segmentation + infected-vs-control labels)
 
-
-## Acknowledgements
-
-This [napari] plugin was generated with [Cookiecutter] using with [@napari]'s [cookiecutter-napari-plugin] template.
-
-<!--
-Don't miss the full getting started guide to set up your new package:
-https://github.com/napari/cookiecutter-napari-plugin#getting-started
-
-and review the napari docs for plugin developers:
-https://napari.org/docs/plugins/index.html
--->
-
-## Contributing
-
-Contributions are very welcome. Tests can be run with [tox], please ensure
-the coverage at least stays the same before you submit a pull request.
 
 ## License
 
