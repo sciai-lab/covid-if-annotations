@@ -5,7 +5,7 @@
             {
                 "name": "covid-if-annotations",
                 "icon": "${MENU_DIR}/icon_256x256.ico",
-                "script": "${PYTHON_SCRIPTS}/covid-if-annotations.exe",
+                "script": "${PYTHON_SCRIPTS}/covid_if_annotations.exe",
                 "desktop": false,
                 "quicklaunch": false
             }
