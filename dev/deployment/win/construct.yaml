@@ -27,3 +27,4 @@ welcome_image: welcome_image.png
 initialize_by_default: False
 register_python_default: False
 license_file: ../../../LICENSE
+company: Kreshuk Group - Embl and, HCI - University of Heidelberg.
