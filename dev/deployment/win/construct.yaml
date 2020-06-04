@@ -1,0 +1,29 @@
+name: covid-if-annotations
+version: 0.0.3dev5
+
+attempt_hardlinks: True
+uninstall_name: uninstall-covid-if-annotations
+
+channels:
+  - http://repo.anaconda.com/pkgs/main/
+  - http://conda.anaconda.org/conda-forge
+  - http://conda.anaconda.org/ilastik-forge
+
+installer_filename: covid-if-annotations-setup-0.0.3dev5.exe
+
+menu_packages:
+  - covid-if-annotations
+
+specs:
+  - covid-if-annotations =0.0.3dev5
+  - menuinst [win]
+  - python =3.7
+
+ignore_duplicate_files: True
+
+icon_image: icon_256x256.png
+header_image: header_image.png
+welcome_image: welcome_image.png
+initialize_by_default: False
+register_python_default: False
+license_file: ../../../LICENSE
