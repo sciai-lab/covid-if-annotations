@@ -22,3 +22,12 @@ Generate an installer by invoking (assuming root directory of this repo):
 constructor dev\deployment\win
 ```
 
+### OSX
+
+Deployment via `py2app` in alias mode, as done for ilastik, too.
+
+From repo root:
+
+```bash
+./dev/deployment/osx/make-release.sh
+```
