@@ -1,9 +1,17 @@
 import argparse
 import os
 import subprocess
+import warnings
 from glob import glob
 
 import h5py
+import napari
+import numpy as np
+
+from napari_covid_if_annotations.io_utils import read_image, has_table
+from napari_covid_if_annotations.layers import (get_centroids,
+                                                get_centroid_kwargs,
+                                                get_segmentation_data)
 
 
 def get_file_lists():
@@ -44,33 +52,88 @@ def sync_uploads():
         subprocess.run(cmd)
 
 
-def validate_uploads():
-    import napari
-    from napari_covid_if_annotations.io_utils import read_image
+def validate_upload(ff, input_root):
+    file_name = os.path.split(ff)[1].replace('_annotations', '')
+    in_file = os.path.join(input_root, file_name)
+    assert os.path.exists(in_file), in_file
 
-    input_root = '/g/kreshuk/data/covid/ground-truth/round1'
+    exp_labels = np.array([0, 1, 2, 3])
+
+    with h5py.File(in_file, 'r') as f:
+        serum = read_image(f, 'serum_IgG')
+        marker = read_image(f, 'marker')
+
+    with h5py.File(ff, 'r') as f:
+        seg = read_image(f, 'cell_segmentation')
+        if not has_table(f, 'infected_cell_labels'):
+            warnings.warn(f"{file_name} does not have labels!")
+            return
+        (label_ids, centroids,
+         _, infected_cell_labels) = get_segmentation_data(f, seg, edge_width=1)
+
+    n_labels = len(infected_cell_labels) - 1
+    unique_labels = np.unique(infected_cell_labels)
+    if not np.array_equal(unique_labels, exp_labels):
+        print("Found unexpected labels for", file_name)
+        print(unique_labels)
+
+    print("Check annotations for file:", file_name)
+
+    # print percentage of infected / control / uncertain / unlabeled
+    n_unlabeled = (infected_cell_labels == 0).sum() - 1
+    frac_unlabeled = float(n_unlabeled) / n_labels
+    print("Unlabeled:", n_unlabeled, "/", n_labels, "=", frac_unlabeled, "%")
+
+    n_infected = (infected_cell_labels == 1).sum()
+    frac_infected = float(n_infected) / n_labels
+    print("infected:", n_infected, "/", n_labels, "=", frac_infected, "%")
+
+    n_control = (infected_cell_labels == 2).sum()
+    frac_control = float(n_control) / n_labels
+    print("control:", n_control, "/", n_labels, "=", frac_control, "%")
+
+    n_uncertain = (infected_cell_labels == 3).sum()
+    frac_uncertain = float(n_uncertain) / n_labels
+    print("uncertain:", n_uncertain, "/", n_labels, "=", frac_uncertain, "%")
+
+    # make label mask
+    label_mask = np.zeros_like(seg)
+    label_mask[np.isin(seg, label_ids[infected_cell_labels == 1])] = 1
+    label_mask[np.isin(seg, label_ids[infected_cell_labels == 2])] = 2
+    label_mask[np.isin(seg, label_ids[infected_cell_labels == 3])] = 3
+    label_mask[np.isin(seg, label_ids[infected_cell_labels == 0])] = 4
+
+    label_mask[seg == 0] = 0
+
+    centroids = get_centroids(seg)
+    ckwargs = get_centroid_kwargs(centroids, infected_cell_labels)
+
+    with napari.gui_qt():
+        viewer = napari.Viewer(title=file_name)
+        viewer.add_image(serum)
+        viewer.add_image(marker)
+        viewer.add_labels(seg, visible=False)
+        viewer.add_labels(label_mask, visible=True)
+        # FIXME something with the points is weird ...
+        viewer.add_points(centroids, visible=False, **ckwargs)
+
+
+def validate_uploads():
+    input_root = '/g/kreshuk/data/covid/for_annotation/round1'
     annotations_root = '/g/kreshuk/data/covid/ground-truth/embl-annotations'
     files = glob(os.path.join(annotations_root, '*.h5'))
+    files.sort()
 
-    # TODO load the infected labels and display them as point layers
-    # print percentage of infected / control / uncertain / unlabeled
     for ff in files:
+        validate_upload(ff, input_root)
 
-        in_file = os.path.join(input_root, ff.replace('_annotation', ''))
-        assert os.path.exists(in_file), in_file
 
-        with h5py.File(in_file, 'r') as f:
-            serum = read_image(f, 'serum_IgG')
-            marker = read_image(f, 'marker')
-
-        with h5py.File(ff, 'r') as f:
-            seg = read_image(f, 'cell_segmentation')
-
-        with napari.gui_qt():
-            viewer = napari.Viewer()
-            viewer.add_image(serum)
-            viewer.add_image(marker)
-            viewer.add_labels(seg)
+def debug():
+    input_root = '/g/kreshuk/data/covid/for_annotation/round1'
+    annotations_root = '/g/kreshuk/data/covid/ground-truth/embl-annotations'
+    fname = '20200417_132123_311_WellD06_PointD06_0005_ChannelDAPI,WF_GFP,TRITC,WF_Cy5,DIA_Seq0365_annotations.h5'
+    path = os.path.join(annotations_root, fname)
+    validate_upload(path, input_root)
 
 
 if __name__ == '__main__':
@@ -78,6 +141,7 @@ if __name__ == '__main__':
     parser.add_argument('--check', type=int, default=0)
     parser.add_argument('--sync', type=int, default=0)
     parser.add_argument('--validate', type=int, default=0)
+    parser.add_argument('--debug', type=int, default=0)
 
     args = parser.parse_args()
 
@@ -89,3 +153,6 @@ if __name__ == '__main__':
 
     if bool(args.validate):
         validate_uploads()
+
+    if bool(args.debug):
+        debug()
