@@ -41,8 +41,7 @@ def sync_uploads():
         in_path = os.path.join(prefix, upload)
         out_path = os.path.join(out_root, upload)
         cmd = ['mc', 'cp', in_path, out_path]
-        print(cmd)
-        # subprocess.run(cmd)
+        subprocess.run(cmd)
 
 
 def validate_uploads():
