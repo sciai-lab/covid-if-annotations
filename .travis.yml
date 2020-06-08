@@ -1,0 +1,56 @@
+language: generic
+
+os:
+  - osx
+  - linux
+
+env:
+  - PYTHON_VERSION=3.6
+  - PYTHON_VERSION=3.7
+
+before_install:
+  - |
+    case $TRAVIS_OS_NAME in
+      osx)
+        wget https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh -O miniconda.sh
+        ;;
+      linux)
+        wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+        ;;
+    esac
+  - |
+    chmod +x miniconda.sh
+    ./miniconda.sh -b
+    export PATH=$HOME/miniconda3/bin:$PATH
+    conda update --yes -q conda -c conda-forge
+    conda config --set always_yes true
+    conda config --set anaconda_upload no
+
+install:
+  - eval "$(conda shell.bash hook)"
+  - conda install -c conda-forge -c defaults conda-build
+  - conda build -c kreshuklab -c conda-forge -c defaults --python=${PYTHON_VERSION} conda-recipe
+
+script:
+  # need kreshuklab channel because conda-forge cachey is outdated
+  - conda create -n covid -c local -c kreshuklab -c conda-forge -c defaults covid-if-annotations
+  - conda activate covid
+  - covid_if_annotations --help
+
+
+
+deploy:
+  - provider: script
+    script:
+      # upload to anaconda cloud
+      - anaconda -t $CONDA_UPLOAD_TOKEN upload $HOME/miniconda3/conda-bld/**/covid-if-annotations-*.tar.bz2 --label staging --label dev
+      # build binary
+      - ./dev/deployment/osx/make-release.sh
+      # upload
+      - curl -u ${UPLD_U}  -T covid-if-annotations_*.tar.bz2 ${UPLD_A}
+
+    on:
+      tags: true
+      os:
+        - osx
+    skip_cleanup: true
