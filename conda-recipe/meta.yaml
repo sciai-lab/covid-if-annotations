@@ -9,14 +9,14 @@ source:
 
 build:
   number: 0
-  skip: True  # [py<36]
+  skip: True  # [py<36 and py>37]
   entry_points:
     {% for ep in data['entry_points']['console_scripts'] %}
     - {{ ep }}
     {% endfor %}
 requirements:
   build:
-    - python >=3.6
+    - python
     - pip
   run:
     - python

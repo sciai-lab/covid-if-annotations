@@ -1,4 +1,4 @@
-${PYTHON} -m pip install . -vv
+${PYTHON} -m pip install --no-deps --ignore-installed . -vv
 
 if [ "$(uname)" == "Darwin" ]
 then
