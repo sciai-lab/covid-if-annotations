@@ -83,10 +83,17 @@ def launch_covid_if_annotation_tool(path=None, saturation_factor=1, edge_width=1
                         layer = viewer.layers['infected-vs-control']
                         viewer.layers.unselect_all()
                         layer.selected = True
-
-                        # modifty the new points layer
-                        viewer.layers['infected-vs-control'].refresh_colors()
                         needs_update = True
+
+                    # modifty the new points layer
+                    # set the corect color maps
+                    face_color_cycle_map = {0: (1, 1, 1, 1),
+                                            1: (1, 0, 0, 1),
+                                            2: (0, 1, 1, 1),
+                                            3: (1, 1, 0, 1)}
+
+                    viewer.layers['infected-vs-control'].face_color_cycle_map = face_color_cycle_map
+                    viewer.layers['infected-vs-control'].refresh_colors()
 
                 # always modify the points layer to deactivate the buttons we don't need
                 if isinstance(event.item, Points):
