@@ -7,6 +7,7 @@ from glob import glob
 import h5py
 import napari
 import numpy as np
+import pandas as pd
 
 from napari_covid_if_annotations.io_utils import read_image, has_table
 from napari_covid_if_annotations.layers import (get_centroids,
@@ -28,6 +29,7 @@ def get_file_lists():
 def check_uploads():
 
     files, uploaded_annotations = get_file_lists()
+    checked_files = pd.read_excel('./annotation_status.xlsx')['FileName'].values
 
     for upload in uploaded_annotations:
         print("Have upload", upload)
@@ -35,7 +37,13 @@ def check_uploads():
         if original_file not in files:
             print("Could not find the associated original", original_file)
 
-    print()
+        file_name = os.path.split(original_file)[1]
+        if file_name in checked_files:
+            print("This file has already been checked")
+        else:
+            print("This file is new!")
+        print()
+
     print("Found", len(uploaded_annotations), "uploads")
 
 
@@ -44,8 +52,14 @@ def sync_uploads():
     out_root = '/g/kreshuk/data/covid/ground-truth/embl-annotations'
     os.makedirs(out_root, exist_ok=True)
     _, uploaded_annotations = get_file_lists()
+    checked_files = pd.read_excel('./annotation_status.xlsx')['FileName'].values
 
     for upload in uploaded_annotations:
+        file_name = upload.replace('_annotations.h5', '.h5')
+        file_name = os.path.split(file_name)[1]
+        if file_name in checked_files:
+            continue
+
         in_path = os.path.join(prefix, upload)
         out_path = os.path.join(out_root, upload)
         cmd = ['mc', 'cp', in_path, out_path]
