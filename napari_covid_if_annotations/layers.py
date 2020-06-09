@@ -46,8 +46,7 @@ def get_centroid_kwargs(centroids, infected_labels):
 
 def load_labels(f):
     seg = read_image(f, 'cell_segmentation')
-    seg_ids, centroids, _, infected_labels = get_segmentation_data(f, seg, edge_width=1,
-                                                                   low=0.005, high=0.995)
+    seg_ids, centroids, _, infected_labels = get_segmentation_data(f, seg, edge_width=1)
 
     seg_kwargs = get_seg_kwargs(f, seg_ids, infected_labels)
 
