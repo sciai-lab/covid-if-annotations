@@ -1,56 +1,71 @@
 language: generic
-
 os:
-  - osx
-  - linux
+- osx
+- linux
 
 env:
-  - PYTHON_VERSION=3.6
+  jobs:
+  # - PYTHON_VERSION=3.6
   - PYTHON_VERSION=3.7
+  global:
+  - secure: fjrv0yMeblFp9y6gQDxfrQ+LEyA8qJ+44+UVocw+wCGauGidPrpvybTbAE0nzG/2vvIQskxBG0ABextutqPh9j2OUkzdOKa9PshwEByv0HwX/7Z2PH6sD0VtjdGp+e5i1u8NJQ42nVJdqM6ETbdbe/qpKGxbQ2Gb2I9z1dH4LHQiQd/NDgr32zl1Qci2Kb0yhboRl1Feyco12YlX6KbTIsgOx1B/FX1mv38HxiRxutPF2IW5yyNwV2YIW4rMSN01n1ttbeUdypwm9UoVX+FoFr+FDq2zARH6Td+oFTRXOBVaE0MVuRfjH+FL3L6/b2ZhMX+69XBqX+Ny0ctcBIy6tZmUkDGRIyqYiNzFChVmy4cN5S0UJEQvqKx471griqS9tzPSi8tcO1CPrOFN640kFBpEON3/25koRHBL/aTiDDpbuwEvCaHGEo9yh3KDFR6pXVrdD7xdNs1vvzXSPwPLKYTXGedFfgBLyVHD902rhdPc93BUH+hU6O7WsM1x3sFdVACO9OgmHGsjB/LMGi1602x4wo2gmT0PDi+jKzmar0/ErQPToPNHd2hatJX2BE1NrOjQHQ96qrmm8LScOCzYSIEdF7maqrj343dHss8bR+/vnoehzdA0sLWwfvxIlx+EymLokqRcsHSP2QeNQb/41az82g1eVH1KKeRkzIwLj20=
+  - secure: PRe3r/fslLZJtXyp05GfDPgsjM9fuDwipFg4+UaBniou0YVFTfcv9u580jgfXFB136g8sJC8e+c5zc8YaBOi+W/eZlDbCx6skMZiIVjMFKqXq6rM4H/EAgGrsTlIoPbqmZfx5VdebzRkhdUvKa7GFYKuqLY/ImxNQBuymxTcHD6F0xojasKrX5c6Tx7NDLsnIu7A4b0RJFQDEba3FSfOI2vofCLjpFD18QCYSavhWkXroqbhV3SkOusd/TbdgJFErNifWS9AUKHBPGqtgV56xLNHz+Dz+I/rcBU6w73Wi0hIgTSdwaQvWZpH1HUf9wR5zRxmadMOILoOP3pKniwV+UsuUsQ+rR+H4ndos50YhOrvZerrfEouDqvVOWEVJiZ86exoJOnUR/3hHXC2qNq0kxE43Yov55wI9Y5bW0tgEe39oMC3bJNilOcSoxnlGBNDxEFNJM3GMXFc5XCgg1NzHDgFsAl6i5ngUxylAoYG+J3KHt76XuhDxGvGks8/Mot0vEmVeKs56f6AYVv2tc6TBa8OLew5S2oNGVlwMmfxg03yaVBmRBDWkXPKS+SxwyJvMQXze6MDDRqKTFg9bd50xuDj9ler2gouPspaxJyReAAOhj2407vrEY/X53eHT45uxaafwDZhoZMFaettAtQm203z4nX6opSQeIuoFv48D8A=
+  - secure: VqLPfsbNUbnL9oc984b8/g830flY1oO0nBb1/t21KZRuHc0H36EXAUel/To8egjkUd7E2fpzPGS8t6duhyO8dgvgOg1kIghh4dcSOsX7hiNQrHEbHp6kv9Io8OAomvDK8iywHW++nPxdJWYGTU70GRyxDL44AIqlwsIQ6xlRFchx6d3nMfvG/Cef4BVgCxcR4HW4O4jKcAEmDt9B2xEKvydjMSLOuojml2zzErkYM2J2rG4DjTO+DvLGdcjj1fJhqP2NWAl4ER91x9snMeavHZxJswgnDYgcH38ludG5K4HrPEsbUqx4geIVGA6ITt1CtXmJWbvxTnwPvBuz1Ld9kagKaO2pL2rTo5ZB9UZz/4bkXgliC5qg4KYdgL7HfEoLhPrEgRsPAg14zqbAWOvoKkUOMT+qVAvZNc+cR+SbZdYYrLh3ZrHobTy4PY3RJexqQdtDM0XYn2JqOncbmD3vSg3ZjVA+meJRY3st6JrVZg31GkzhHOQiWQLIAU6bHw8UmpXBsg4KZwyyEkAxjm21u1ajvoHlBf6XM9ilMQ3gprzuf1bLAy+1yrdly+usTscJf4nxZuTIF/C7FSP+Ob3QNUnzx5h7CIGtR+mszjRllBjJFp2QKfPLDkXYMpJulKNQmyn7kXuj5nuafWGB3WznOy1Yuu+NlE1bAecK7W/8PxQ=
 
 before_install:
-  - |
-    case $TRAVIS_OS_NAME in
-      osx)
-        wget https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh -O miniconda.sh
-        ;;
-      linux)
-        wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
-        ;;
-    esac
-  - |
-    chmod +x miniconda.sh
-    ./miniconda.sh -b
-    export PATH=$HOME/miniconda3/bin:$PATH
-    conda update --yes -q conda -c conda-forge
-    conda config --set always_yes true
-    conda config --set anaconda_upload no
+- |
+  case $TRAVIS_OS_NAME in
+    osx)
+      wget https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh -O miniconda.sh
+      ;;
+    linux)
+      wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+      ;;
+  esac
+- |
+  chmod +x miniconda.sh
+  ./miniconda.sh -b
+  export PATH=$HOME/miniconda3/bin:$PATH
+  conda update --yes -q conda -c conda-forge
+  conda config --set always_yes true
+  conda config --set anaconda_upload no
+  eval "$(conda shell.bash hook)"
+  conda install -c conda-forge -c defaults conda-build
 
 install:
-  - eval "$(conda shell.bash hook)"
-  - conda install -c conda-forge -c defaults conda-build
-  - conda build -c kreshuklab -c conda-forge -c defaults --python=${PYTHON_VERSION} conda-recipe
+- conda build -c kreshuklab -c conda-forge -c defaults --python=${PYTHON_VERSION}
+  conda-recipe
 
 script:
-  # need kreshuklab channel because conda-forge cachey is outdated
-  - conda create -n covid -c local -c kreshuklab -c conda-forge -c defaults covid-if-annotations
-  - conda activate covid
-  - covid_if_annotations --help
+- conda create -n covid -c local -c kreshuklab -c conda-forge -c defaults covid-if-annotations
+- conda activate covid
+- covid_if_annotations --help
 
+before_deploy:
+- conda install -n base -c conda-forge -c defaults anaconda-client
 
 
 deploy:
-  - provider: script
-    script:
-      # upload to anaconda cloud
-      - anaconda -t $CONDA_UPLOAD_TOKEN upload $HOME/miniconda3/conda-bld/**/covid-if-annotations-*.tar.bz2 --label staging --label dev
-      # build binary
-      - ./dev/deployment/osx/make-release.sh
-      # upload
-      - curl -u ${UPLD_U}  -T covid-if-annotations_*.tar.bz2 ${UPLD_A}
+  provider: script
+  script: anaconda -t ${ATOKEN} upload $HOME/miniconda3/conda-bld/**/covid-if-annotations-*.tar.bz2
+  on:
+    tags: true
 
-    on:
-      tags: true
-      os:
-        - osx
-    skip_cleanup: true
+stages:
+  - test
+  - deploy
+
+jobs:
+  include:
+    - stage: deploy osx binary
+      install: skip
+      script: skip
+      deploy:
+        provider: script
+        script: >-
+          ./dev/deployment/osx/make-release.sh && curl -u ${UPLD_U} -T covid-if-annotations_${TRAVIS_TAG}.app.tar.bz2 ${UPLD_A}covid-if-annotations_${TRAVIS_TAG}.app.tar.bz2
+        on:
+          tags: true
+      env:
+        - PYTHON_VERSION=3.7
+      os: osx
