@@ -1,7 +1,7 @@
 set -e
 set -x
 
-RELEASE_VERSION=0.0.3dev5
+RELEASE_VERSION=0.0.3dev6
 
 echo "Creating app bundle for covid-if-annotations ${RELEASE_VERSION}"
 

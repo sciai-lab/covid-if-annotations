@@ -33,7 +33,7 @@ setup(
     packages=find_packages(),
     python_requires='>=3.6',
     install_requires=requirements,
-    version="0.0.3dev5",
+    version="0.0.3dev6",
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
