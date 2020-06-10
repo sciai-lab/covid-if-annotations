@@ -10,9 +10,7 @@ import numpy as np
 import pandas as pd
 
 from napari_covid_if_annotations.io_utils import read_image, has_table
-from napari_covid_if_annotations.layers import (get_centroids,
-                                                get_centroid_kwargs,
-                                                get_segmentation_data)
+from napari_covid_if_annotations.layers import get_segmentation_data
 
 
 def get_file_lists():
@@ -119,17 +117,12 @@ def validate_upload(ff, input_root):
 
     label_mask[seg == 0] = 0
 
-    centroids = get_centroids(seg)
-    ckwargs = get_centroid_kwargs(centroids, infected_cell_labels)
-
     with napari.gui_qt():
         viewer = napari.Viewer(title=file_name)
         viewer.add_image(serum)
         viewer.add_image(marker)
         viewer.add_labels(seg, visible=False)
         viewer.add_labels(label_mask, visible=True)
-        # FIXME something with the points is weird ...
-        viewer.add_points(centroids, visible=False, **ckwargs)
 
 
 def validate_uploads():
@@ -138,7 +131,12 @@ def validate_uploads():
     files = glob(os.path.join(annotations_root, '*.h5'))
     files.sort()
 
+    checked_files = pd.read_excel('./annotation_status.xlsx')['FileName'].values
     for ff in files:
+        file_name = ff.replace('_annotations.h5', '.h5')
+        file_name = os.path.split(file_name)[1]
+        if file_name in checked_files:
+            continue
         validate_upload(ff, input_root)
 
 
