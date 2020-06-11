@@ -2,6 +2,9 @@ environment:
   # set miniconda version explicitly
   MINICONDA: C:\Miniconda37-x64
   APPVEYOR_CACHE_ENTRY_ZIP_ARGS: -xr!*/ -ir-!*.tar.bz2 -ir-!*.conda  # Exclude directories only cache downloaded tars
+  ATOKEN:
+    secure: JBHpRgpIfeO7xURHDlchv42LaAS3JT9KCgkiz4f+o8kbGg5zbvXAGJRtkFDVVwqE
+
   matrix:
     - PYTHON_VERSION: 3.6
     - PYTHON_VERSION: 3.7
@@ -31,7 +34,7 @@ test_script:
 
 
 deploy_script:
-  - cmd: if NOT "%APPVEYOR_REPO_TAG_NAME%"=="" echo "would deploy"
+  - cmd: if NOT "%APPVEYOR_REPO_TAG_NAME%"=="" anaconda -t %ATOKEN% upload %MINICONDA%\conda-bld\win-64\covid-if-annotations-*.tar.bz2
   - cmd: if NOT "%APPVEYOR_REPO_TAG_NAME%"=="" if "%PYTHON_VERSION%"=="3.7" echo "would deploy -> 2"
 
 # on_finish:
