@@ -1,0 +1,27 @@
+environment:
+  # set miniconda version explicitly
+  MINICONDA: C:\Miniconda37-x64
+  APPVEYOR_CACHE_ENTRY_ZIP_ARGS: -xr!*/ -ir-!*.tar.bz2 -ir-!*.conda  # Exclude directories only cache downloaded tars
+
+cache:
+  - C:\Miniconda37-x64\pkgs -> appveyor.yml
+
+install:
+  - cmd: set "PATH=%MINICONDA%;%MINICONDA%\Scripts;%MINICONDA%\Library\bin;%PATH%
+  - cmd: where conda
+  - cmd: conda config --set always_yes yes --set changeps1 no --set channel_priority flexible
+  - cmd: conda update -q conda
+  - cmd: conda install -c conda-forge conda-build anaconda-client
+  - conda clean -p
+
+build_script:
+  - cmd: conda build -c kreshuklab -c conda-forge -c defaults --python=%PYTHON_VERSION%  conda-recipe
+
+before_test:
+  - cmd: conda install -c local -c kreshuklab -c conda-forge -c defaults covid-if-annotations
+
+test_script:
+  - cmd: covid_if_annotations --help
+
+# on_finish:
+#  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
