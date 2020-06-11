@@ -16,7 +16,7 @@ build:
     {% endfor %}
 requirements:
   build:
-    - python >=3.6
+    - python
     - pip
   run:
     - python

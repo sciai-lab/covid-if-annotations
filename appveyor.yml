@@ -2,6 +2,12 @@ environment:
   # set miniconda version explicitly
   MINICONDA: C:\Miniconda37-x64
   APPVEYOR_CACHE_ENTRY_ZIP_ARGS: -xr!*/ -ir-!*.tar.bz2 -ir-!*.conda  # Exclude directories only cache downloaded tars
+  matrix:
+    - PYTHON_VERSION: 3.6
+    - PYTHON_VERSION: 3.7
+
+matrix:
+  fast_finish: true
 
 cache:
   - C:\Miniconda37-x64\pkgs -> appveyor.yml
@@ -15,13 +21,18 @@ install:
   - conda clean -p
 
 build_script:
-  - cmd: conda build -c kreshuklab -c conda-forge -c defaults --python=%PYTHON_VERSION%  conda-recipe
+  - cmd: conda build -c kreshuklab -c conda-forge -c defaults python=%PYTHON_VERSION%  conda-recipe
 
 before_test:
-  - cmd: conda install -c local -c kreshuklab -c conda-forge -c defaults covid-if-annotations
+  - cmd: conda install -c local -c kreshuklab -c conda-forge -c defaults --python=%PYTHON_VERSION% covid-if-annotations
 
 test_script:
   - cmd: covid_if_annotations --help
+
+
+deploy_script:
+  - cmd: if NOT "%APPVEYOR_REPO_TAG_NAME%"=="" echo "would deploy"
+  - cmd: if NOT "%APPVEYOR_REPO_TAG_NAME%"=="" if "%PYTHON_VERSION%"=="3.7" echo "would deploy -> 2"
 
 # on_finish:
 #  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
