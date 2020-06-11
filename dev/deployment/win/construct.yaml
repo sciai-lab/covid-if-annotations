@@ -1,5 +1,5 @@
 name: covid-if-annotations
-version: 0.0.3dev5
+version: 0.0.3dev6
 
 attempt_hardlinks: True
 uninstall_name: uninstall-covid-if-annotations
@@ -9,13 +9,13 @@ channels:
   - http://conda.anaconda.org/conda-forge
   - http://conda.anaconda.org/kreshuklab
 
-installer_filename: covid-if-annotations-setup-0.0.3dev5.exe
+installer_filename: covid-if-annotations-setup-0.0.3dev6.exe
 
 menu_packages:
   - covid-if-annotations
 
 specs:
-  - covid-if-annotations =0.0.3dev5
+  - covid-if-annotations =0.0.3dev6
   - menuinst [win]
   - python =3.7
 
