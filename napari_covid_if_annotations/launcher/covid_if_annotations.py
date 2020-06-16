@@ -5,7 +5,7 @@ import napari
 from napari.layers.points import Points
 from napari.layers.labels import Labels
 from napari.layers.image import Image
-from napari_covid_if_annotations.layers import get_layers_from_file
+from napari_covid_if_annotations.layers import get_layers_from_file, load_labels
 from napari_covid_if_annotations.gui import connect_to_viewer
 from napari_covid_if_annotations._key_bindings import modify_points_layer, update_layers
 
@@ -17,6 +17,20 @@ def initialize_from_file(viewer, path, saturation_factor, edge_width):
     for (data, kwargs, layer_type) in layers:
         adder = getattr(viewer, f'add_{layer_type}')
         adder(data, **kwargs)
+
+
+def initialize_annotations(viewer, path):
+    with h5py.File(path, 'r') as f:
+        new_layers = load_labels(f)
+    seg_layer = new_layers[0]
+    point_layer = new_layers[1]
+
+    viewer.layers['cell-segmentation'].data = seg_layer[0]
+    viewer.layers['cell-segmentation'].metadata = seg_layer[1]['metadata']
+
+    viewer.layers['infected-vs-control'].data = point_layer[0]
+    viewer.layers['infected-vs-control'].metadata = point_layer[1]['metadata']
+    viewer.layers['infected-vs-control'].properties = point_layer[1]['properties']
 
 
 def replace_layer(new_layer, layers, name_to_replace, protected_metadata=None):
@@ -38,13 +52,19 @@ def replace_layer(new_layer, layers, name_to_replace, protected_metadata=None):
 
 
 # should be installed as a script in setup.py
-def launch_covid_if_annotation_tool(path=None, saturation_factor=1, edge_width=1):
+def launch_covid_if_annotation_tool(data_path=None, annotation_path=None,
+                                    saturation_factor=1, edge_width=1):
     """ Launch the Covid IF anootation tool.
 
     Based on https://github.com/transformify-plugins/segmentify/blob/master/examples/launch.py
     """
 
-    with_data = path is not None
+    with_data = data_path is not None
+    with_annotations = annotation_path is not None
+
+    if with_data and not with_annotations:
+        raise ValueError("If annotations are passed you also need to pass data!")
+
     with napari.gui_qt():
         viewer = napari.Viewer()
 
@@ -107,11 +127,17 @@ def launch_covid_if_annotation_tool(path=None, saturation_factor=1, edge_width=1
 
         viewer.layers.events.changed.connect(on_layer_change)
         if with_data:
-            initialize_from_file(viewer, path,
+            initialize_from_file(viewer, data_path,
                                  saturation_factor, edge_width)
+
+        if with_annotations:
+            initialize_annotations(viewer, annotation_path)
 
         # connect the gui elements and modify layer functionality
         connect_to_viewer(viewer)
+
+        if with_annotations:
+            update_layers(viewer)
 
 
 def main():
