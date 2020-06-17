@@ -7,7 +7,7 @@ uninstall_name: uninstall-covid-if-annotations
 channels:
   - http://repo.anaconda.com/pkgs/main/
   - http://conda.anaconda.org/conda-forge
-  - http://conda.anaconda.org/ilastik-forge
+  - http://conda.anaconda.org/kreshuklab
 
 installer_filename: covid-if-annotations-setup-0.0.3dev6.exe
 

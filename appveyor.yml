@@ -1,0 +1,47 @@
+environment:
+  # set miniconda version explicitly
+  MINICONDA: C:\Miniconda37-x64
+  APPVEYOR_CACHE_ENTRY_ZIP_ARGS: -xr!*/ -ir-!*.tar.bz2 -ir-!*.conda  # Exclude directories only cache downloaded tars
+  ATOKEN:
+    secure: JBHpRgpIfeO7xURHDlchv42LaAS3JT9KCgkiz4f+o8kbGg5zbvXAGJRtkFDVVwqE
+  UPLD_A:
+    secure: 8z+FM88ZOdl+KUzKazD/MAI8HgncP4k6niGNvm7oykZefdUxsR5iWvaIkUjA5/LI
+  UPLD_U:
+    secure: Yk8a1hOcjeW7XP21YZNgRhhJN7uh3jKyvcPcEMyjacI=
+
+  matrix:
+    - PYTHON_VERSION: 3.6
+    - PYTHON_VERSION: 3.7
+
+matrix:
+  fast_finish: true
+
+cache:
+  - C:\Miniconda37-x64\pkgs -> appveyor.yml
+
+install:
+  - cmd: set "PATH=%MINICONDA%;%MINICONDA%\Scripts;%MINICONDA%\Library\bin;%PATH%
+  - cmd: conda config --set always_yes yes --set changeps1 no --set channel_priority flexible
+  - cmd: conda update -q conda
+  - cmd: conda install -c conda-forge conda-build anaconda-client
+  - conda clean -p
+
+build_script:
+  - cmd: conda build -c kreshuklab -c conda-forge -c defaults --python=%PYTHON_VERSION%  conda-recipe
+
+before_test:
+  - cmd: conda install -c local -c kreshuklab -c conda-forge -c defaults python=%PYTHON_VERSION% covid-if-annotations
+
+test_script:
+  - cmd: covid_if_annotations --help
+
+before_deploy:
+  - cmd: conda install -c conda-forge -c defaults curl constructor=3.0.0
+
+deploy_script:
+  - cmd: if NOT "%APPVEYOR_REPO_TAG_NAME%"=="" anaconda -t %ATOKEN% upload %MINICONDA%\conda-bld\win-64\covid-if-annotations-*.tar.bz2
+  - cmd: if NOT "%APPVEYOR_REPO_TAG_NAME%"=="" if "%PYTHON_VERSION%"=="3.7" constructor dev\deployment\win
+  - cmd: if NOT "%APPVEYOR_REPO_TAG_NAME%"=="" if "%PYTHON_VERSION%"=="3.7" curl -u %UPLD_U% -T covid-if-annotations-setup-%APPVEYOR_REPO_TAG_NAME%.exe %UPLD_A%covid-if-annotations-setup-%APPVEYOR_REPO_TAG_NAME%.exe
+
+# on_finish:
+#  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
