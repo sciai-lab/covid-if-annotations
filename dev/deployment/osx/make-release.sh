@@ -1,7 +1,7 @@
 set -e
 set -x
 
-RELEASE_VERSION=0.0.3dev5
+RELEASE_VERSION=0.0.3dev6
 
 echo "Creating app bundle for covid-if-annotations ${RELEASE_VERSION}"
 
@@ -19,7 +19,7 @@ RELEASE_ENV=${CONDA_ROOT}/envs/covid-release
 conda env remove -y -q -n covid-release
 
 echo "Creating new release environment"
-conda create -q -y -n covid-release covid-if-annotations=${RELEASE_VERSION} py2app --override-channels -c ilastik-forge -c conda-forge -c defaults
+conda create -q -y -n covid-release covid-if-annotations=${RELEASE_VERSION} py2app --override-channels -c kreshuklab -c conda-forge -c defaults
 conda activate covid-release
 
 ${RELEASE_ENV}/bin/python dev/deployment/osx/setup-alias-app.py py2app --alias --dist-dir .
