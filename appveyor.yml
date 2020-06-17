@@ -36,7 +36,7 @@ test_script:
   - cmd: covid_if_annotations --help
 
 before_deploy:
-  - cmd: conda install -c conda-forge -c defaults curl constructor
+  - cmd: conda install -c conda-forge -c defaults curl constructor=3.0.0
 
 deploy_script:
   - cmd: if NOT "%APPVEYOR_REPO_TAG_NAME%"=="" anaconda -t %ATOKEN% upload %MINICONDA%\conda-bld\win-64\covid-if-annotations-*.tar.bz2
