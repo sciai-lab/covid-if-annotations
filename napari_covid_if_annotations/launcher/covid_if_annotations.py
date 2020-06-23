@@ -143,11 +143,13 @@ def launch_covid_if_annotation_tool(data_path=None, annotation_path=None,
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--path', type=str, default=None)
+    parser.add_argument('--annotation_path', type=str, default=None)
     parser.add_argument('--saturation_factor', type=float, default=1)
     parser.add_argument('--edge_width', type=int, default=1)
 
     args = parser.parse_args()
-    launch_covid_if_annotation_tool(args.path, args.saturation_factor, args.edge_width)
+    launch_covid_if_annotation_tool(args.path, args.annotation_path,
+                                    args.saturation_factor, args.edge_width)
 
 
 if __name__ == '__main__':
