@@ -170,7 +170,7 @@ Open a terminal and make sure your conda is activated.
 Then run the following commands:
 
 ```
-conda create -c conda-forge -c ilastik -n covid-if-annotations covid-if-annotations
+conda create -c kreshuklab -c conda-forge -n covid-if-annotations covid-if-annotations
 conda activate covid-if-annotations
 ```
 
@@ -178,8 +178,6 @@ You can then run the plugin via the command
 ```
 covid_if_annotations
 ```
-
-TODO we need to build this conda-package
 
 ### Install from source
 
